@@ -1,0 +1,2 @@
+pyFirmata2==2.0.1
+python-socketio==4.4.0

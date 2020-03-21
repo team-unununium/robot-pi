@@ -1,7 +1,6 @@
-from pyfirmata import Arduino, util
-
-import hnr_camera as cameraThread
-import hnr_socketio as socketThread
+import hnr_camera as camera
+import hnr_firmata as firmata
+import hnr_socketio as socket
 
 def main():
     pass
