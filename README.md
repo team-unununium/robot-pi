@@ -12,7 +12,7 @@ The project consists of 4 main modules: The client, server, Raspberry Pi and Ard
  - [Arduino Module](https://github.com/team-unununium/HnR-2020-VR-Arduino)
 
 # Current module - Raspberry Pi
-The Raspberry Pi module is in charge of facilitating communication between the Arduino and the server. It also provides the live video feed to the clients. The identity of the raspberry pi is confirmed by the server through a common secret, which is the `SERVER_ROBOT_SECRET`.
+The Raspberry Pi module is in charge of facilitating communication between the Arduino and the server. It uses [picamera](https://picamera.readthedocs.io/), [python-socketio](https://python-socketio.readthedocs.io/) and [pyFirmata2](https://github.com/berndporr/pyFirmata2). It also provides the live video feed to the clients. The identity of the raspberry pi is confirmed by the server through a common secret, which is the `SERVER_ROBOT_SECRET`.
 
 ## How to install
 After cloning the repository, just run  `pip3 install -r requirements.txt` then `python main.py`  and you should be good to go!
