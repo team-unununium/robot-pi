@@ -12,15 +12,17 @@ The project consists of 4 main modules: The client, server, Raspberry Pi and Ard
  - [Arduino Module](https://github.com/team-unununium/HnR-2020-VR-Arduino)
 
 # Current module - Raspberry Pi
-The Raspberry Pi module is in charge of facilitating communication between the Arduino and the server. It uses [picamera](https://picamera.readthedocs.io/), [python-socketio](https://python-socketio.readthedocs.io/) and [pyFirmata2](https://github.com/berndporr/pyFirmata2). It also provides the live video feed to the clients. The identity of the raspberry pi is confirmed by the server through a common secret, which is the `SERVER_ROBOT_SECRET`.
+The Raspberry Pi module is in charge of facilitating communication between the Arduino and the server. It uses [picamera](https://picamera.readthedocs.io/), [python-socketio](https://python-socketio.readthedocs.io/) and [pyFirmata2](https://github.com/berndporr/pyFirmata2). The full list of requirements can be found in requirements.txt. It also provides the live video feed to the clients. The identity of the raspberry pi is confirmed by the server through a common secret, which is the `SERVER_ROBOT_SECRET`.
 
 ## How to install
-After cloning the repository, just run  `pip3 install -r requirements.txt` then `python main.py`  and you should be good to go!
+After cloning the repository, just run  `pip3 install -r requirements.txt` then set up the following environment variables:
+- `SERVER_URL`: The URL for the server module that the robot connects to.
+- `SERVER_ROBOT_SECRET`: The secret used to verify the robot's identity with the server, this variable should be the same on the server module as well.
+After that, just run `python main.py`  and you should be good to go!
  
 ## Installation notes
+- For the environment variables, you may choose to input it with the command or set up a .env file in the project's root directory for the environment variables to be read. 
 - As the module requires a live video feed, a camera module would need to be attached to the Raspberry Pi for the module to function.
-- The `SERVER_ROBOT_SECRET` between the robot and the server is hardcoded for now, but it will be added as an argument in the future. Currently, to change the secret, you may need to change the `SERVER_ROBOT_SECRET` located in each file manually.
-- The default server that the robot connects to is [unununium.pcchin.com](https://unununium.pcchin.com/). To modify the server, you may need to modify the URL located in each file. This will be added as an argument in the future.
 
 # If you wish to help
 
