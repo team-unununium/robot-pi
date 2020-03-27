@@ -18,3 +18,6 @@ class FirmataProgram:
     def stop(self):
         self.board.samplingOff()
         self.board.exit()
+
+if __name__ == "__main__":
+    raise RuntimeError("This file is a module and should not be run as a program")

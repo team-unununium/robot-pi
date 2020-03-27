@@ -7,3 +7,6 @@ class CameraProgram:
         self.camera = PiCamera()
 
     # TODO: Complete
+
+if __name__ == "__main__":
+    raise RuntimeError("This file is a module and should not be run as a program")
