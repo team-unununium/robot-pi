@@ -33,6 +33,10 @@ GUID = str(uuid.uuid4())
 ACCESS_TOKEN = None
 sio = socketio.Client(reconnection_attempts=10)
 
+def startPrograms():
+    FirmataProgram().start()
+    CameraProgram().start()
+
 def main():
     logging.info(f"Main program started, GUID is {GUID}, server URL is {SERVER_URL}, server-robot secret is {SERVER_ROBOT_SECRET}")
 
@@ -45,6 +49,7 @@ def main():
     req_code = req_response.status_code
     req_success = False
 
+    # Request response handling
     if req_code == 201:
         ACCESS_TOKEN = req_response.json()['token']
         logging.info(f"Access token request successful, access token is {ACCESS_TOKEN}")
@@ -60,12 +65,12 @@ def main():
     else:
         logging.error(f"Access token request failed with unexpected error code {req_code}")
 
-    if not req_success:
+    if req_success:
+        SocketProgram.start(GUID, SERVER_URL, ACCESS_TOKEN)
+    else:
         print("An error occured while getting the access token. Please check the logs for more information.")
         logging.info("Program shutdown due to unable to get the access token")
         raise SystemExit
-
-    SocketProgram.start(GUID, SERVER_URL, ACCESS_TOKEN)
                 
 if __name__ == "__main__":
     main()

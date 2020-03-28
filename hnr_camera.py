@@ -8,6 +8,10 @@ class CameraProgram:
         self.stream = BytesIO()
         self.camera = PiCamera()
 
+    def start(self):
+        # TODO: Complete
+        pass
+
     # TODO: Complete
 
 if __name__ == "__main__":

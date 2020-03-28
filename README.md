@@ -18,9 +18,12 @@ The Raspberry Pi module is in charge of facilitating communication between the A
 After cloning the repository, just run  `pip3 install -r requirements.txt` then set up the following environment variables:
 - `SERVER_URL`: The URL for the server module that the robot connects to.
 - `SERVER_ROBOT_SECRET`: The secret used to verify the robot's identity with the server, this variable should be the same on the server module as well.
+
 After that, just run `python main.py`  and you should be good to go!
  
 ## Installation notes
+- The output of the program is sent to a `robot.log` file in the same directory as main.py, so the program may fail if the directory is not writable by the program. Thus, no output would appear on the console itself except for certain error messages.
+- To shut down the program, you would need to send a SIGINT (Keyboard Interrupt) to it.
 - For the environment variables, you may choose to input it with the command or set up a .env file in the project's root directory for the environment variables to be read. 
 - As the module requires a live video feed, a camera module would need to be attached to the Raspberry Pi for the module to function.
 
