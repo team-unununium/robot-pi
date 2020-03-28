@@ -2,6 +2,7 @@ from io import BytesIO
 from picamera import PiCamera
 import logging
 
+# TODO: Complete CameraProgram
 class CameraProgram:
     def __init__(self):
         logging.info("Camera program initiated")
@@ -9,10 +10,13 @@ class CameraProgram:
         self.camera = PiCamera()
 
     def start(self):
-        # TODO: Complete
-        pass
+        logging.info("Camera program started")
 
-    # TODO: Complete
+    def addPeer(self, peer):
+        logging.info("A peer has been successfully added")
+
+    def removePeer(self, peer):
+        logging.info("A peer has been successfully removed")
 
 if __name__ == "__main__":
     logging.critical("Module hnr_camera ran as program, exiting")

@@ -1,24 +1,24 @@
-from os import environ
-from main import sio, startPrograms
 import logging
+import requests
 
-# The environ[...] is a workaround for setting global variables as python-socketio functions are static functions
-def start(guid, server_url, access_token):
-    environ['socketio-GUID'] = guid
-    environ['socketio-SERVER_URL'] = server_url
-    environ['socketio-ACCESS_TOKEN'] = access_token
-    logging.info(f"Initiated Socket.IO connection with server, GUID is {guid}, server URL is {server_url},access token is {access_token}")
+from hnr_camera import CameraProgram
+from hnr_firmata import FirmataProgram
+from hnr_robot import RobotProgram
+from hnr_settings import sio
+import hnr_settings as settings
 
-    sio.connect(server_url)
+def start():
+    logging.info("Initiated Socket.IO connection with server")
+    sio.connect(settings.SERVER_URL)
     sio.wait()
 
     # Anything after this should not be accessible as the program should pause indefinitely at sio.wait()
-    logging.warning(f"Unable to connect to server through Socket.IO, deleting client data from database then exiting")
+    logging.warning("Unable to connect to server through Socket.IO, deleting client data from database then exiting")
     req_json = {
-        "guid": guid,
-        "token": access_token
+        "guid": settings.GUID,
+        "token": settings.ACCESS_TOKEN
     }
-    req_response = requests.delete(f"{server_url}/access", json=req_json)
+    req_response = requests.delete(f"{settings.SERVER_URL}/access", json=req_json)
     req_code = req_response.status_code
 
     # Request response handling
@@ -32,26 +32,76 @@ def start(guid, server_url, access_token):
         logging.error("Deletion request failed with error code 500 (Error occured while attempting to query database)")
     else:
         logging.error(f"Deletion request failed with unknown error code {req_code}")
-    print("An error occured while connection to the Socket.IO server. Please check the logs for more information.")
+    print("An error occured while connecting to the Socket.IO server. Please check the logs for more information.")
+
+def sendSessionInfo(data):
+    sio.emit("robotSendSessionInfo", data)
+
+def updateData(data):
+    sio.emit("robotSendSessionInfo", data)
 
 @sio.event
 def connect():
     logging.info("Socket.IO connection with server established, authenticating")
     sio.emit("authentication", { 
-        "guid": environ['socketio-GUID'],
-        "token": environ['socketio-ACCESS_TOKEN']
+        "guid": settings.GUID,
+        "token": settings.ACCESS_TOKEN
     })
 
 @sio.event
 def authenticated(data):
     logging.info("Authentication successful, starting the Arduino and PiCamera modules")
-    startPrograms()
+    settings.firmataProgram = FirmataProgram()
+    settings.firmataProgram.start()
+
+    settings.cameraProgram = CameraProgram()
+    settings.cameraProgram.start()
+
+    settings.robotProgram = RobotProgram()
+    settings.robotProgram.start()
 
 @sio.event
 def unauthorized(data):
+    # No further action needed as server should disconnect within a few seconds
     logging.error(f"Unauthorized to connect to server through Socket.IO, message is {data['message']}")
 
-# TODO: Functions
+@sio.event
+def robotAddPeer(data):
+    logging.info("Received request to add peer")
+    settings.cameraProgram.addPeer(data)
+
+@sio.event
+def robotRemovePeer(data):
+    logging.info("Received request to remove peer")
+    settings.cameraProgram.addPeer(data)
+
+@sio.event
+def robotAddMultiplePeers(dataList):
+    logging.info("Received request to add multiple peers")
+    if isinstance(dataList, list):
+        for data in dataList:
+            settings.cameraProgram.addPeer(data)
+    else:
+        logging.warning(f"Data provided to add multiple peers is of type {type(dataList)} instead of the expected list")
+
+@sio.event
+def robotRotate(data):
+    logging.info("Received request to rotate robot")
+    settings.robotProgram.rotate(data)
+
+@sio.event
+def robotStartMoving(data):
+    logging.info("Received request to start moving robot")
+    settings.robotProgram.startMoving()
+
+@sio.event
+def robotStopMoving(data):
+    logging.info("Received request to stop moving robot")
+    settings.robotProgram.stopMoving()
+
+@sio.event
+def robotRequestUpdateAll():
+    settings.robotProgram.requestData()
 
 @sio.event
 def disconnect():
