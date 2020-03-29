@@ -14,10 +14,30 @@ The project consists of 4 main modules: The client, server, Raspberry Pi and Ard
 # Current module - Raspberry Pi
 The Raspberry Pi module is in charge of facilitating communication between the Arduino and the server. It uses [picamera](https://picamera.readthedocs.io/), [python-socketio](https://python-socketio.readthedocs.io/) and [pyFirmata2](https://github.com/berndporr/pyFirmata2). The full list of requirements can be found in requirements.txt. It also provides the live video feed to the clients. The identity of the raspberry pi is confirmed by the server through a common secret, which is the `SERVER_ROBOT_SECRET`.
 
+## Progress
+- [x] Main Program
+- [x] Socket.IO Module
+- [ ] Camera Module
+- [ ] Firmata Module
+- [ ] Robot Module
+- [x] Settings Module
+
 ## How to install
+Before cloning the repository, you need to install the following dependencies (outside of pip3) on your system due to [aiortc](https://github.com/aiortc/aiortc)'s requirements:
+- OpenSSL 1.0.2 or greater
+- FFmpeg 4.0 or greater
+- LibVPX for video encoding / decoding
+- Opus for audio encoding / decoding
+
+For more information on aiortc's dependencies, visit their [repository page](https://github.com/aiortc/aiortc) for more information.
+
 After cloning the repository, just run  `pip3 install -r requirements.txt` then set up the following environment variables:
 - `SERVER_URL`: The URL for the server module that the robot connects to.
 - `SERVER_ROBOT_SECRET`: The secret used to verify the robot's identity with the server, this variable should be the same on the server module as well.
+
+Some optional environment variables include:
+- `RESOLUTION`: A tuple representing the resolution of the camera, defaults to 480p (640 * 480).
+- `FRAMERATE`: An integer representing the frame rate of the camera, defaults to 30 fps.
 
 After that, just run `python main.py`  and you should be good to go!
  
