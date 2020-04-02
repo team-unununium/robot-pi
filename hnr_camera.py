@@ -72,6 +72,7 @@ class CameraProgram:
         if self.working:
             logger.info("A peer has been successfully added")
             self.peerList.append(peer)
+            # TODO: Add peer
         else:
             logger.warning("Camera program is not working, cannot add peer")
             print("An error occured while attempting to add a peer. Please check the logs for more information.")
@@ -81,6 +82,7 @@ class CameraProgram:
             try:
                 logger.info("A peer has been successfully removed")
                 self.peerList.remove(peer)
+                # TODO: Remove peer
             except ValueError:
                 logger.warning(f"Invalid peer {str(peer)} received to be removed")
         else:

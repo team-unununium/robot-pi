@@ -12,13 +12,13 @@ The project consists of 4 main modules: The client, server, Raspberry Pi and Ard
  - [Arduino Module](https://github.com/team-unununium/HnR-2020-VR-Arduino)
 
 # Current module - Raspberry Pi
-The Raspberry Pi module is in charge of facilitating communication between the Arduino and the server. It uses [picamera](https://picamera.readthedocs.io/), [python-socketio](https://python-socketio.readthedocs.io/) and [pyFirmata2](https://github.com/berndporr/pyFirmata2). The full list of requirements can be found in requirements.txt. It also provides the live video feed to the clients. The identity of the raspberry pi is confirmed by the server through a common secret, which is the `SERVER_ROBOT_SECRET`.
+The Raspberry Pi module is in charge of facilitating communication between the Arduino and the server. It uses [picamera](https://picamera.readthedocs.io/), [python-socketio](https://python-socketio.readthedocs.io/) and [pyFirmata2](https://github.com/berndporr/pyFirmata2). The full list of requirements can be found in requirements.txt. It also provides the live video feed to the clients. The identity of the raspberry pi is confirmed by the server through a common secret, which is the `SERVER_ROBOT_SECRET`. The communication protocol between the Raspberry Pi and the Arduino can be found in [diagram.uml](https://github.com/team-unununium/HnR-2020-VR-Pi/blob/master/diagram.uml) and [firmata_protocol.png](https://github.com/team-unununium/HnR-2020-VR-Pi/blob/master/firmata_protocol.png) 
 
 ## Progress
 - [x] Main Program
 - [x] Socket.IO Module
 - [ ] Camera Module
-- [ ] Firmata Module
+- [x] Firmata Module (Except port info)
 - [x] Settings Module
 
 ## How to install
@@ -37,6 +37,8 @@ After cloning the repository, just run  `pip3 install -r requirements.txt` then 
 Some optional environment variables include:
 - `RESOLUTION`: A tuple representing the resolution of the camera, defaults to 480p (640 * 480).
 - `FRAMERATE`: An integer representing the frame rate of the camera, defaults to 30 fps.
+- `INPUT_PIN`: A string for the input pin for the robot to listen from, defaults to d:0:i.
+- `OUTPUT_PIN`: A string for the output pin for the robot to write to, defaults to d:0:o.
 
 After that, just run `python main.py`  and you should be good to go!
  
@@ -46,6 +48,7 @@ After that, just run `python main.py`  and you should be good to go!
 - For the environment variables, you may choose to input it with the command or set up a .env file in the project's root directory for the environment variables to be read. 
 - As the module requires a live video feed, a camera module would need to be attached to the Raspberry Pi for the module to function.
 - For `RESOLUTION`, the width needs to be in multiples of 32 and the height needs to be in multiples of 16. See [picamera's docs](https://picamera.readthedocs.io/en/release-1.12/recipes2.html#capturing-to-a-numpy-array) for more information.
+- The port that the robot listens from and writes to are automatically assumed to be digital ports.
 
 # If you wish to help
 

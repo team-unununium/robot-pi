@@ -17,6 +17,8 @@ def init():
     global ACCESS_TOKEN
     global RESOLUTION
     global FRAMERATE
+    global INPUT_PIN
+    global OUTPUT_PIN
 
     # Dynamic variables
     global sio
@@ -29,11 +31,13 @@ def init():
     SERVER_ROBOT_SECRET = environ.get("SERVER_ROBOT_SECRET")
     RESOLUTION = environ.get("RESOLUTION")
     FRAMERATE = environ.get("FRAMERATE")
+    INPUT_PIN = environ.get("INPUT_PIN")
+    OUTPUT_PIN = environ.get("OUTPUT_PIN")
 
     # Initialize dynamic variables
     sio = socketio.Client(reconnection_attempts=10)
     programStarted = True
-    programRunning = False
+    programRunning = Fals
 
     # Variable checking
     # Must-provide variables
@@ -55,6 +59,16 @@ def init():
         FRAMERATE = 24
     else:
         logging.info(f"FRAMERATE is {str(FRAMERATE)}")
+    if INPUT_PIN is None:
+        logging.info("INPUT_PIN not provided, defaults to d:0:o")
+        INPUT_PIN = "d:0:o"
+    else:
+        logging.info(f"INPUT_PIN is {INPUT_PIN}")
+    if OUTPUT_PIN is None:
+        logging.info("OUTPUT_PIN not provided, defaults to d:0:i")
+        OUTPUT_PIN = "d:0:i"
+    else:
+        logging.info(f"OUTPUT_PIN is {OUTPUT_PIN}")
 
 if __name__ == "__main__":
     logging.critical("Module hnr_settings ran as program, exiting")

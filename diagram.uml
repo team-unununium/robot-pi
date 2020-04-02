@@ -1,0 +1,31 @@
+@startuml
+participant Arduino
+participant Pi
+
+note over Arduino, Pi: All commands are sent as single symbols for speed & ease of implementation
+
+== Starting ==
+Pi -> Arduino: ! (Hello)
+note over Pi: The Pi will keep saying hello to\nthe Arduino until it responds
+Arduino -> Pi: ! (Hello)
+
+== Sensor Data ==
+Pi -> Arduino: @ (Send me all the sensors' data)
+Arduino -> Pi: @ (Data coming, hang tight)
+Arduino -> Pi: { Full JSON data }
+Arduino -> Pi: & (Data finished)
+
+== Sensor Update ==
+Arduino -> Pi: % (Update for data coming, hang tight)
+Arduino -> Pi: { Full JSON data }
+Arduino -> Pi: & (Data finished)
+
+== Robot Updates ==
+Pi -> Arduino: ~* (Start moving)
+...Separate command...
+Pi -> Arduino: ~ (Stop moving)
+...Separate command...
+Pi -> Arduino: ^ (Rotation data incoming)
+Pi -> Arduino: { Full JSON data }
+Pi -> Arduino: & (Data finished)
+@enduml
