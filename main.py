@@ -16,11 +16,11 @@ import hnr_socketio as SocketProgram
 # Graceful exit from SIGINT
 def signal_handler(sig, frame):
     logger.info("SIGINT detected, shutdown initiated")
-    if settings.programRunning:
+    if settings.programStarted:
         settings.sio.disconnect()
         settings.firmataProgram.stop()
         settings.cameraProgram.stop()
-        settings.programRunning = False
+        settings.programStarted = False
     raise SystemExit
 signal.signal(signal.SIGINT, signal_handler)
 

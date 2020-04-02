@@ -3,9 +3,12 @@ from av import VideoFrame
 from io import BytesIO
 from threading import Thread
 from picamera import PiCamera, PiCameraError
+
 import logging
 import numpy
 import time
+
+import hnr_settings as settings
 
 logger = logging.getLogger("Camera Module")
 
@@ -21,7 +24,7 @@ class CameraProgram:
 
             # Initialize streaming variables
             self.stream = BytesIO()
-            self.currentFrame = numpy.empty((self.camera.resolution[1], self.camera.resolution[0], 3), dtype=np.uint8) # The 1 and 0 needs to be this way due to how numpy does its stuff
+            self.currentFrame = numpy.empty((self.camera.resolution[1], self.camera.resolution[0], 3), dtype=numpy.uint8) # The 1 and 0 needs to be this way due to how numpy does its stuff
 
             # Initialize aiortc variables
             self.rtcPeerConnection = RTCPeerConnection()
@@ -41,9 +44,8 @@ class CameraProgram:
 
             # Start of recording loop
             while self.recording:
-                startTime = time.time()
-                frCount = 0
                 # TODO: Complete
+                pass
         else:
             logger.warning("Camera program is not working, cannot start recording thread")
             print("An error occured while attempting to start the recording thread. Please check the logs for more information.")

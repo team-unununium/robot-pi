@@ -1,4 +1,4 @@
-from pyfirmata2 import Arduino, util
+from pyfirmata2 import Arduino
 import logging
 
 logger = logging.getLogger("Firmata Module")
@@ -27,11 +27,6 @@ class FirmataProgram:
             logger.warning(f"Firmata program is not working, cannot start program")
             print("An error occured while attempting to start the Firmata program. Please check the logs for more information.")
 
-    def dataCallback(self, data):
-        # Main data handler
-        # TODO: Complete data handler
-        pass
-
     def stop(self):
         if self.working:
             logger.info("Firmata program stopped")
@@ -40,6 +35,23 @@ class FirmataProgram:
         else:
             logger.warning(f"Firmata program is not working, cannot stop program")
             print("An error occured while attempting to stop the Firmata program. Please check the logs for more information.")
+
+    # Main data handler
+    def dataCallback(self, data):
+        # TODO: Complete data handler
+        pass
+    
+    def requestData(self):
+        pass
+
+    def startMoving(self):
+        pass
+
+    def stopMoving(self):
+        pass
+
+    def rotate(self, data):
+        pass
 
 if __name__ == "__main__":
     logger.critical("Module hnr_firmata ran as program, exiting")

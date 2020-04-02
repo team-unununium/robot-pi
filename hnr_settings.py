@@ -8,7 +8,6 @@ def init():
     # Main programs
     global cameraProgram
     global firmataProgram
-    global robotProgram
     global socketProgram
 
     # Static variables
@@ -21,6 +20,7 @@ def init():
 
     # Dynamic variables
     global sio
+    global programStarted
     global programRunning
 
     # Initialize static variables
@@ -32,7 +32,8 @@ def init():
 
     # Initialize dynamic variables
     sio = socketio.Client(reconnection_attempts=10)
-    programRunning = True
+    programStarted = True
+    programRunning = False
 
     # Variable checking
     # Must-provide variables
@@ -47,9 +48,13 @@ def init():
     if RESOLUTION is None:
         logging.info("RESOLUTION not provided, defaults to 720p")
         RESOLUTION = (640, 480)
-    if FRAME_RATE is None:
-        logging.info("FRAME_RATE not provided, defaults to 24")
-        FRAMERATE = 30
+    else:
+        logging.info(f"RESOLUTION is {str(RESOLUTION)}")
+    if FRAMERATE is None:
+        logging.info("FRAMERATE not provided, defaults to 24")
+        FRAMERATE = 24
+    else:
+        logging.info(f"FRAMERATE is {str(FRAMERATE)}")
 
 if __name__ == "__main__":
     logging.critical("Module hnr_settings ran as program, exiting")

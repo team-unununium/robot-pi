@@ -3,7 +3,6 @@ import requests
 
 from hnr_camera import CameraProgram
 from hnr_firmata import FirmataProgram
-from hnr_robot import RobotProgram
 import hnr_settings as settings
 
 logger = logging.getLogger("Socket Module")
@@ -57,9 +56,8 @@ def authenticated(data):
 
     settings.cameraProgram = CameraProgram()
     settings.cameraProgram.start()
-
-    settings.robotProgram = RobotProgram()
-    settings.robotProgram.start()
+    
+    settings.programRunning = True
 
 @settings.sio.event
 def unauthorized(data):
@@ -68,41 +66,63 @@ def unauthorized(data):
 
 @settings.sio.event
 def robotAddPeer(data):
-    logger.info("Received request to add peer")
-    settings.cameraProgram.addPeer(data)
+    if settings.programRunning:
+        logger.info("Received request to add peer")
+        settings.cameraProgram.addPeer(data)
+    else:
+        logger.warning("Received request to add peer but camera program is not running")
 
 @settings.sio.event
 def robotRemovePeer(data):
-    logger.info("Received request to remove peer")
-    settings.cameraProgram.addPeer(data)
+    if settings.programRunning:
+        logger.info("Received request to remove peer")
+        settings.cameraProgram.addPeer(data)
+    else:
+        logger.warning("Received request to remove peer but camera program is not running")
 
 @settings.sio.event
 def robotAddMultiplePeers(dataList):
-    logger.info("Received request to add multiple peers")
-    if isinstance(dataList, list):
-        for data in dataList:
-            settings.cameraProgram.addPeer(data)
+    if settings.programRunning:
+        logger.info("Received request to add multiple peers")
+        if isinstance(dataList, list):
+            for data in dataList:
+                settings.cameraProgram.addPeer(data)
+        else:
+            logger.warning(f"Data provided to add multiple peers is of type {type(dataList)} instead of the expected list")
     else:
-        logger.warning(f"Data provided to add multiple peers is of type {type(dataList)} instead of the expected list")
+        logger.warning("Received request to add multiple peers but camera program is not running")
 
 @settings.sio.event
 def robotRotate(data):
-    logger.info("Received request to rotate robot")
-    settings.robotProgram.rotate(data)
+    if settings.programRunning:
+        logger.info("Received request to rotate robot")
+        settings.firmataProgram.rotate(data)
+    else:
+        logger.warning("Received request to rotate robot but Firmata program is not running")
 
 @settings.sio.event
 def robotStartMoving(data):
-    logger.info("Received request to start moving robot")
-    settings.robotProgram.startMoving()
+    if settings.programRunning:
+        logger.info("Received request to start moving robot")
+        settings.firmataProgram.startMoving()
+    else:
+        logger.warning("Received request to start moving robot but Firmata program is not running")
 
 @settings.sio.event
 def robotStopMoving(data):
-    logger.info("Received request to stop moving robot")
-    settings.robotProgram.stopMoving()
+    if settings.programRunning:
+        logger.info("Received request to stop moving robot")
+        settings.firmataProgram.stopMoving()
+    else:
+        logger.warning("Received request to stop moving robot but Firmata program is not running")
 
 @settings.sio.event
 def robotRequestUpdateAll():
-    settings.robotProgram.requestData()
+    if settings.programRunning:
+        logger.info("Received request to update all data sent to the server")
+        settings.firmataProgram.requestData()
+    else:
+        logger.warning("Received request to update all data but Firmata program is not running")
 
 @settings.sio.event
 def disconnect():

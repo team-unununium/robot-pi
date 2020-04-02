@@ -19,7 +19,6 @@ The Raspberry Pi module is in charge of facilitating communication between the A
 - [x] Socket.IO Module
 - [ ] Camera Module
 - [ ] Firmata Module
-- [ ] Robot Module
 - [x] Settings Module
 
 ## How to install
@@ -46,6 +45,7 @@ After that, just run `python main.py`  and you should be good to go!
 - To shut down the program, you would need to send a SIGINT (Keyboard Interrupt) to it.
 - For the environment variables, you may choose to input it with the command or set up a .env file in the project's root directory for the environment variables to be read. 
 - As the module requires a live video feed, a camera module would need to be attached to the Raspberry Pi for the module to function.
+- For `RESOLUTION`, the width needs to be in multiples of 32 and the height needs to be in multiples of 16. See [picamera's docs](https://picamera.readthedocs.io/en/release-1.12/recipes2.html#capturing-to-a-numpy-array) for more information.
 
 # If you wish to help
 
