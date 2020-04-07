@@ -55,9 +55,10 @@ def authenticated(data):
     if settings.firmataProgram is None:
         settings.firmataProgram = FirmataProgram()
         settings.firmataProgram.start()
-    if settings.cameraProgram is None:
-        settings.cameraProgram = CameraProgram()
-        settings.cameraProgram.start()
+    # Twitch is currently being used for streaming
+    # if settings.cameraProgram is None:
+        # settings.cameraProgram = CameraProgram()
+        # settings.cameraProgram.start()
     settings.programRunning = True
 
 @settings.sio.event

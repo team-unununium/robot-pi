@@ -17,8 +17,8 @@ The Raspberry Pi module is in charge of facilitating communication between the A
 ## Progress
 - [x] Main Program
 - [x] Socket.IO Module
-- [ ] Camera Module
-- [x] Firmata Module (Except port info)
+- [x] Camera Module (Using external bash script which live streas to Twitch)
+- [x] Firmata Module (Untested)
 - [x] Settings Module
 
 ## How to install
@@ -49,6 +49,11 @@ After that, just run `python main.py`  and you should be good to go!
 - As the module requires a live video feed, a camera module would need to be attached to the Raspberry Pi for the module to function.
 - For `RESOLUTION`, the width needs to be in multiples of 32 and the height needs to be in multiples of 16. See [picamera's docs](https://picamera.readthedocs.io/en/release-1.12/recipes2.html#capturing-to-a-numpy-array) for more information.
 - The port that the robot listens from and writes to are automatically assumed to be digital ports.
+
+## Error Diagnosis
+- If the camera program provides the following error `mmal: mmal_vc_port_info_set: failed to set port info (3:0): EINVAL`, the resolution you had provided may be too small or too large.
+- If the camera program prints out a `PiCameraResolutionRounded` warning, the program should still be able to function normally, just that the resolution output may not be exactly the same as you intended.
+- If the Firmata program fails with error message `Could not find a serial port`, it means that the Raspberry Pi does not detect an Arduino.
 
 # If you wish to help
 

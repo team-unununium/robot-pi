@@ -19,6 +19,7 @@ class InfoOnlyFilter(logging.Filter):
     def filter(self, record):
         return record.levelname == "INFO"
 
+# Separate info loggers from the rest
 log_error = logging.FileHandler("robot-error.log", "w+")
 log_error.setLevel(logging.WARNING)
 log_error.setFormatter(formatter)
@@ -31,6 +32,7 @@ logging.getLogger('').addHandler(log_error)
 logging.getLogger('').addHandler(log_info)
 logger = logging.getLogger("Main")
 
+# User defined modules
 import hnr_settings as settings
 settings.init()
 import hnr_socketio as SocketProgram
@@ -46,6 +48,7 @@ def signal_handler(sig, frame):
     raise SystemExit
 signal.signal(signal.SIGINT, signal_handler)
 
+# Main program start
 def main():
     logger.info("Main program started")
     logger.debug(f"GUID is {settings.GUID}, server URL is {settings.SERVER_URL}, server-robot secret is {settings.SERVER_ROBOT_SECRET}")

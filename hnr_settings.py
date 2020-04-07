@@ -4,7 +4,8 @@ import socketio
 import uuid
 
 def init():
-    logging.info("Settings file initiated")
+    logger = logging.getLogger("Settings")
+    logger.info("Settings file initiated")
     # Main programs
     global cameraProgram
     global firmataProgram
@@ -48,34 +49,34 @@ def init():
     # Variable checking
     # Must-provide variables
     if SERVER_URL is None:
-        logging.critical("SERVER_URL not provided as environment variable")
+        logger.critical("SERVER_URL not provided as environment variable")
         raise ValueError("SERVER_URL should be provided as environment variable")
     elif SERVER_ROBOT_SECRET is None:
-        logging.critical("SERVER_ROBOT_SECRET not provided as environment variable")
+        logger.critical("SERVER_ROBOT_SECRET not provided as environment variable")
         raise ValueError("SERVER_ROBOT_SECRET should be provided as environment variable")
 
     # Optional variables
     if RESOLUTION is None:
-        logging.info("RESOLUTION not provided, defaults to 720p")
+        logger.info("RESOLUTION not provided, defaults to 480p")
         RESOLUTION = (640, 480)
     else:
-        logging.info(f"RESOLUTION is {str(RESOLUTION)}")
+        logger.info(f"RESOLUTION is {str(RESOLUTION)}")
     if FRAMERATE is None:
-        logging.info("FRAMERATE not provided, defaults to 24")
+        logger.info("FRAMERATE not provided, defaults to 24")
         FRAMERATE = 24
     else:
-        logging.info(f"FRAMERATE is {str(FRAMERATE)}")
+        logger.info(f"FRAMERATE is {str(FRAMERATE)}")
     if INPUT_PIN is None:
-        logging.info("INPUT_PIN not provided, defaults to d:0:o")
+        logger.info("INPUT_PIN not provided, defaults to d:0:o")
         INPUT_PIN = "d:0:o"
     else:
-        logging.info(f"INPUT_PIN is {INPUT_PIN}")
+        logger.info(f"INPUT_PIN is {INPUT_PIN}")
     if OUTPUT_PIN is None:
-        logging.info("OUTPUT_PIN not provided, defaults to d:0:i")
+        logger.info("OUTPUT_PIN not provided, defaults to d:0:i")
         OUTPUT_PIN = "d:0:i"
     else:
-        logging.info(f"OUTPUT_PIN is {OUTPUT_PIN}")
+        logger.info(f"OUTPUT_PIN is {OUTPUT_PIN}")
 
 if __name__ == "__main__":
-    logging.critical("Module hnr_settings ran as program, exiting")
+    logger.critical("Module hnr_settings ran as program, exiting")
     raise RuntimeError("This file is a module and should not be run as a program")

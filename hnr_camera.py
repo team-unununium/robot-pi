@@ -16,6 +16,7 @@ class CameraProgram:
     def __init__(self):
         logger.info("Camera program initiated")
         self.working = True
+        self.called = False
         try:
             # Initialize camera
             self.camera = PiCamera()
@@ -25,6 +26,7 @@ class CameraProgram:
             # Initialize streaming variables
             self.stream = BytesIO()
             self.currentFrame = numpy.empty((self.camera.resolution[1], self.camera.resolution[0], 3), dtype=numpy.uint8) # The 1 and 0 needs to be this way due to how numpy does its stuff
+            print(self.currentFrame.shape)
 
             # Initialize aiortc variables
             self.rtcPeerConnection = RTCPeerConnection()
@@ -44,15 +46,21 @@ class CameraProgram:
 
             # Start of recording loop
             while self.recording:
-                # TODO: Complete
-                for foo in self.camera.capture_continuous(self.stream, 'bgr', use_video_port=True):
+                for foo in self.camera.capture_continuous(self.stream, 'jpeg', use_video_port=True):
                     if not self.recording:
                         break
                     self.stream.truncate()
                     self.stream.seek(0)
+                    # In case the value is changed in the middle of the processing thread
+                    currentFrame = self.stream.getvalue()
+                    Thread(target=self.uploadFrame, args=[currentFrame]).start()
         else:
             logger.warning("Camera program is not working, cannot start recording thread")
             print("An error occured while attempting to start the recording thread. Please check the logs for more information.")
+    
+    def uploadFrame(self, currentFrame):
+        # Testing with Twitch streaming for now
+        pass
 
     def start(self):
         if self.working:
@@ -69,8 +77,7 @@ class CameraProgram:
             self.recording = False
             self.recordingThread.join()
         else:
-            logger.warning("Camera program is not working, cannot stop program")
-            print("An error occured while attempting to stop the Camera program. Please check the logs for more information.")
+            logger.warning("Camera program is not working (already stopped)")
 
     def addPeer(self, peer):
         if self.working:
