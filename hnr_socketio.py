@@ -51,18 +51,24 @@ def connect():
 @settings.sio.event
 def authenticated(data):
     logger.info("Authentication successful, starting the Arduino and PiCamera modules")
-    settings.firmataProgram = FirmataProgram()
-    settings.firmataProgram.start()
-
-    settings.cameraProgram = CameraProgram()
-    settings.cameraProgram.start()
-    
+    # The event may fire multiple times
+    if settings.firmataProgram is None:
+        settings.firmataProgram = FirmataProgram()
+        settings.firmataProgram.start()
+    if settings.cameraProgram is None:
+        settings.cameraProgram = CameraProgram()
+        settings.cameraProgram.start()
     settings.programRunning = True
 
 @settings.sio.event
 def unauthorized(data):
     # No further action needed as server should disconnect within a few seconds
     logger.error(f"Unauthorized to connect to server through Socket.IO, message is {data['message']}")
+    settings.disconnectCount += 1
+    if settings.disconnectCount == 10:
+        logger.error("Socket connection has been rejected 10 times, exiting")
+        print("An error occured in establishing a connection to the Socket.IO server. Please check the logs for more information.")
+        sio.disconnect()
 
 @settings.sio.event
 def robotAddPeer(data):

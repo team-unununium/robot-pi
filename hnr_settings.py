@@ -24,20 +24,26 @@ def init():
     global sio
     global programStarted
     global programRunning
+    global disconnectCount
 
     # Initialize static variables
     GUID = str(uuid.uuid4())
     SERVER_URL = environ.get("SERVER_URL")
     SERVER_ROBOT_SECRET = environ.get("SERVER_ROBOT_SECRET")
-    RESOLUTION = environ.get("RESOLUTION")
-    FRAMERATE = environ.get("FRAMERATE")
+    RESOLUTION = tuple([int(num) for num in environ.get("RESOLUTION").split(",")])
+    FRAMERATE = int(environ.get("FRAMERATE"))
     INPUT_PIN = environ.get("INPUT_PIN")
     OUTPUT_PIN = environ.get("OUTPUT_PIN")
 
     # Initialize dynamic variables
+    cameraProgram = None
+    firmataProgram = None
+    socketProgram = None
+
     sio = socketio.Client(reconnection_attempts=10)
     programStarted = True
-    programRunning = Fals
+    programRunning = False
+    disconnectCount = 0
 
     # Variable checking
     # Must-provide variables

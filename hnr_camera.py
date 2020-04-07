@@ -45,7 +45,11 @@ class CameraProgram:
             # Start of recording loop
             while self.recording:
                 # TODO: Complete
-                pass
+                for foo in self.camera.capture_continuous(self.stream, 'bgr', use_video_port=True):
+                    if not self.recording:
+                        break
+                    self.stream.truncate()
+                    self.stream.seek(0)
         else:
             logger.warning("Camera program is not working, cannot start recording thread")
             print("An error occured while attempting to start the recording thread. Please check the logs for more information.")

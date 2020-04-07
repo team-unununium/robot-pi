@@ -8,6 +8,7 @@ crc32c==2.0
 cryptography==2.8
 idna==2.9
 netifaces==0.10.9
+numpy==1.18.2
 picamera==1.13
 pkg-resources==0.0.0
 pycparser==2.20
@@ -21,3 +22,4 @@ python-socketio==4.4.0
 requests==2.23.0
 six==1.14.0
 urllib3==1.25.8
+websocket-client==0.57.0

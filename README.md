@@ -35,7 +35,7 @@ After cloning the repository, just run  `pip3 install -r requirements.txt` then 
 - `SERVER_ROBOT_SECRET`: The secret used to verify the robot's identity with the server, this variable should be the same on the server module as well.
 
 Some optional environment variables include:
-- `RESOLUTION`: A tuple representing the resolution of the camera, defaults to 480p (640 * 480).
+- `RESOLUTION`: A comma separated list representing the resolution of the camera, defaults to 480p (640 * 480). eg: 1920,1080
 - `FRAMERATE`: An integer representing the frame rate of the camera, defaults to 30 fps.
 - `INPUT_PIN`: A string for the input pin for the robot to listen from, defaults to d:0:i.
 - `OUTPUT_PIN`: A string for the output pin for the robot to write to, defaults to d:0:o.

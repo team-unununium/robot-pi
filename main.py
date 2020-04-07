@@ -2,12 +2,34 @@ from dotenv import load_dotenv
 load_dotenv()
 
 import logging
+import platform
 import requests
 import signal
 
-# Set up logging
-logging.basicConfig(filename="robot.log", filemode="w", level=logging.INFO, format="%(asctime)s: %(name)s - %(levelname)s: %(message)s", datefmt="%d-%m-%Y %I:%M:%S %p")
-logger = logging.getLogger('Main')
+# Set up logging (Do not output to console)
+if platform.system() == "Windows":
+    logging.basicConfig(filename="NUL", level=logging.INFO)
+else:
+    # MacOS and Linux both have /dev/null
+    logging.basicConfig(filename="/dev/null", level=logging.INFO)
+formatter = logging.Formatter(fmt="%(asctime)s: %(name)s - %(levelname)s: %(message)s", datefmt="%d-%m-%Y %I:%M:%S %p")
+
+# Info level only filter
+class InfoOnlyFilter(logging.Filter):
+    def filter(self, record):
+        return record.levelname == "INFO"
+
+log_error = logging.FileHandler("robot-error.log", "w+")
+log_error.setLevel(logging.WARNING)
+log_error.setFormatter(formatter)
+log_info = logging.FileHandler("robot-info.log", "w+")
+log_info.setLevel(logging.INFO)
+log_info.setFormatter(formatter)
+log_info.addFilter(InfoOnlyFilter())
+
+logging.getLogger('').addHandler(log_error)
+logging.getLogger('').addHandler(log_info)
+logger = logging.getLogger("Main")
 
 import hnr_settings as settings
 settings.init()
