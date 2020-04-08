@@ -43,7 +43,6 @@ def signal_handler(sig, frame):
     if settings.programStarted:
         settings.sio.disconnect()
         settings.firmataProgram.stop()
-        settings.cameraProgram.stop()
         settings.programStarted = False
     raise SystemExit
 signal.signal(signal.SIGINT, signal_handler)
