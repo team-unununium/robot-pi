@@ -14,10 +14,13 @@ The project consists of 4 main modules: The client, server, Raspberry Pi and Ard
 # Current module - Raspberry Pi
 The Raspberry Pi module is in charge of facilitating communication between the Arduino and the server. It uses [picamera](https://picamera.readthedocs.io/), [python-socketio](https://python-socketio.readthedocs.io/) and [pyFirmata2](https://github.com/berndporr/pyFirmata2). The full list of requirements can be found in requirements.txt. It also provides the live video feed to the clients. The identity of the raspberry pi is confirmed by the server through a common secret, which is the `SERVER_ROBOT_SECRET`. The communication protocol between the Raspberry Pi and the Arduino can be found in [diagram.uml](https://github.com/team-unununium/HnR-2020-VR-Pi/blob/master/diagram.uml) and [firmata_protocol.png](https://github.com/team-unununium/HnR-2020-VR-Pi/blob/master/firmata_protocol.png) 
 
+## Note on camera module
+As of now, we are experimenting through using Twitch instead of WebRTC to send our live streams to the clients. The script that is being used for it can be found [here](https://gist.githubusercontent.com/russfeld/0878b1f8eaf7409136b9125ce5e1458f/raw/62824c1021f816a13046f1aba7722b8ac519c28d/picam-stream.sh). Twitch is comparably better than YouTube and Mixer for this purpose as it has a lower latency with RTMP streaming of around 5 seconds, compared to around 20 seconds on YouTube and Mixer.
+
 ## Progress
 - [x] Main Program
 - [x] Socket.IO Module
-- [x] Camera Module (Using external bash script which live streas to Twitch)
+- [x] Camera Module (External script)
 - [x] Firmata Module (Untested)
 - [x] Settings Module
 
