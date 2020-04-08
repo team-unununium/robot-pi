@@ -1,9 +1,9 @@
 import logging
 import requests
 
-from hnr_camera import CameraProgram
 from hnr_firmata import FirmataProgram
 import hnr_settings as settings
+from hnr_settings import sio
 
 logger = logging.getLogger("Socket Module")
 
@@ -55,10 +55,6 @@ def authenticated(data):
     if settings.firmataProgram is None:
         settings.firmataProgram = FirmataProgram()
         settings.firmataProgram.start()
-    # Twitch is currently being used for streaming
-    # if settings.cameraProgram is None:
-        # settings.cameraProgram = CameraProgram()
-        # settings.cameraProgram.start()
     settings.programRunning = True
 
 @settings.sio.event
@@ -70,34 +66,6 @@ def unauthorized(data):
         logger.error("Socket connection has been rejected 10 times, exiting")
         print("An error occured in establishing a connection to the Socket.IO server. Please check the logs for more information.")
         sio.disconnect()
-
-@settings.sio.event
-def robotAddPeer(data):
-    if settings.programRunning:
-        logger.info("Received request to add peer")
-        settings.cameraProgram.addPeer(data)
-    else:
-        logger.warning("Received request to add peer but camera program is not running")
-
-@settings.sio.event
-def robotRemovePeer(data):
-    if settings.programRunning:
-        logger.info("Received request to remove peer")
-        settings.cameraProgram.addPeer(data)
-    else:
-        logger.warning("Received request to remove peer but camera program is not running")
-
-@settings.sio.event
-def robotAddMultiplePeers(dataList):
-    if settings.programRunning:
-        logger.info("Received request to add multiple peers")
-        if isinstance(dataList, list):
-            for data in dataList:
-                settings.cameraProgram.addPeer(data)
-        else:
-            logger.warning(f"Data provided to add multiple peers is of type {type(dataList)} instead of the expected list")
-    else:
-        logger.warning("Received request to add multiple peers but camera program is not running")
 
 @settings.sio.event
 def robotRotate(data):

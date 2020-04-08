@@ -12,51 +12,32 @@ The project consists of 4 main modules: The client, server, Raspberry Pi and Ard
  - [Arduino Module](https://github.com/team-unununium/HnR-2020-VR-Arduino)
 
 # Current module - Raspberry Pi
-The Raspberry Pi module is in charge of facilitating communication between the Arduino and the server. It uses [picamera](https://picamera.readthedocs.io/), [python-socketio](https://python-socketio.readthedocs.io/) and [pyFirmata2](https://github.com/berndporr/pyFirmata2). The full list of requirements can be found in requirements.txt. It also provides the live video feed to the clients. The identity of the raspberry pi is confirmed by the server through a common secret, which is the `SERVER_ROBOT_SECRET`. The communication protocol between the Raspberry Pi and the Arduino can be found in [diagram.uml](https://github.com/team-unununium/HnR-2020-VR-Pi/blob/master/diagram.uml) and [firmata_protocol.png](https://github.com/team-unununium/HnR-2020-VR-Pi/blob/master/firmata_protocol.png) 
-
-## Note on camera module
-As of now, we are experimenting through using Twitch instead of WebRTC to send our live streams to the clients. The script that is being used for it can be found [here](https://gist.githubusercontent.com/russfeld/0878b1f8eaf7409136b9125ce5e1458f/raw/62824c1021f816a13046f1aba7722b8ac519c28d/picam-stream.sh). Twitch is comparably better than YouTube and Mixer for this purpose as it has a lower latency with RTMP streaming of around 5 seconds, compared to around 20 seconds on YouTube and Mixer.
+The Raspberry Pi module is in charge of facilitating communication between the Arduino and the server. It uses [picamera](https://picamera.readthedocs.io/), [python-socketio](https://python-socketio.readthedocs.io/) and [pyFirmata2](https://github.com/berndporr/pyFirmata2). The full list of requirements can be found in requirements.txt. It also provides the live video feed to the clients through a public livestream on Twitch. The identity of the raspberry pi is confirmed by the server through a common secret, which is the `SERVER_ROBOT_SECRET`. The communication protocol between the Raspberry Pi and the Arduino can be found in [diagram.uml](https://github.com/team-unununium/HnR-2020-VR-Pi/blob/master/diagram.uml) and [firmata_protocol.png](https://github.com/team-unununium/HnR-2020-VR-Pi/blob/master/firmata_protocol.png) 
 
 ## Progress
 - [x] Main Program
 - [x] Socket.IO Module
-- [x] Camera Module (External script)
 - [x] Firmata Module (Untested)
 - [x] Settings Module
 
 ## How to install
-Before cloning the repository, you need to install the following dependencies (outside of pip3) on your system due to [aiortc](https://github.com/aiortc/aiortc)'s requirements:
-- OpenSSL 1.0.2 or greater
-- FFmpeg 4.0 or greater
-- LibVPX for video encoding / decoding
-- Opus for audio encoding / decoding
-
-For more information on aiortc's dependencies, visit their [repository page](https://github.com/aiortc/aiortc) for more information.
-
 After cloning the repository, just run  `pip3 install -r requirements.txt` then set up the following environment variables:
 - `SERVER_URL`: The URL for the server module that the robot connects to.
 - `SERVER_ROBOT_SECRET`: The secret used to verify the robot's identity with the server, this variable should be the same on the server module as well.
 
 Some optional environment variables include:
-- `RESOLUTION`: A comma separated list representing the resolution of the camera, defaults to 480p (640 * 480). eg: 1920,1080
-- `FRAMERATE`: An integer representing the frame rate of the camera, defaults to 30 fps.
 - `INPUT_PIN`: A string for the input pin for the robot to listen from, defaults to d:0:i.
 - `OUTPUT_PIN`: A string for the output pin for the robot to write to, defaults to d:0:o.
 
-After that, just run `python main.py`  and you should be good to go!
- 
+After that, just run `python main.py` and you should be good to go!
+If you wish to transmit a livestream to the clients through Twitch, you would need to use an external script to do so. The link for the script that is currently being used by us can be found [here](https://gist.githubusercontent.com/russfeld/0878b1f8eaf7409136b9125ce5e1458f/raw/62824c1021f816a13046f1aba7722b8ac519c28d/picam-stream.sh).
+
 ## Installation notes
 - The output of the program is sent to a `robot.log` file in the same directory as main.py, so the program may fail if the directory is not writable by the program. Thus, no output would appear on the console itself except for certain error messages.
 - To shut down the program, you would need to send a SIGINT (Keyboard Interrupt) to it.
 - For the environment variables, you may choose to input it with the command or set up a .env file in the project's root directory for the environment variables to be read. 
 - As the module requires a live video feed, a camera module would need to be attached to the Raspberry Pi for the module to function.
-- For `RESOLUTION`, the width needs to be in multiples of 32 and the height needs to be in multiples of 16. See [picamera's docs](https://picamera.readthedocs.io/en/release-1.12/recipes2.html#capturing-to-a-numpy-array) for more information.
 - The port that the robot listens from and writes to are automatically assumed to be digital ports.
-
-## Error Diagnosis
-- If the camera program provides the following error `mmal: mmal_vc_port_info_set: failed to set port info (3:0): EINVAL`, the resolution you had provided may be too small or too large.
-- If the camera program prints out a `PiCameraResolutionRounded` warning, the program should still be able to function normally, just that the resolution output may not be exactly the same as you intended.
-- If the Firmata program fails with error message `Could not find a serial port`, it means that the Raspberry Pi does not detect an Arduino.
 
 # If you wish to help
 
