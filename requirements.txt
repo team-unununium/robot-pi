@@ -6,7 +6,7 @@ pyFirmata2==2.0.1
 pyserial==3.4
 python-dotenv==0.14.0
 python-engineio==3.12.1
-python-socketio==4.5.1
+python-socketio==4.6.0
 requests==2.23.0
 six==1.14.0
 urllib3==1.25.10
