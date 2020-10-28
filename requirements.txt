@@ -4,7 +4,7 @@ idna==2.10
 picamera==1.13
 pyFirmata2==2.0.1
 pyserial==3.4
-python-dotenv==0.14.0
+python-dotenv==0.15.0
 python-engineio==3.12.1
 python-socketio==4.6.0
 requests==2.23.0
