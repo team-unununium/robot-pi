@@ -1,0 +1,52 @@
+@startuml
+title Raspberry Pi - Arduino Communication Protocol
+
+participant "Raspberry Pi" as pi
+participant Arduino as arduino
+
+==On Start==
+pi -> arduino: ! (Hello!)
+note over pi
+The Raspberry Pi will keep saying hello
+to the Arduino until it responds
+end note
+arduino -> pi: ! (Hello, you can stop now)
+
+==Reading Commands==
+...Full sensor data from robot...
+pi -> arduino: %A (Send me all the sensor's data)
+arduino -> pi: ^A (Data coming, hang tight)
+activate arduino
+arduino -> pi: { Full JSON data }
+arduino -> pi: & (Data finished)
+deactivate arduino
+
+...Partial sensor data from robot...
+arduino -> pi: ^B (Update for data coming, hang tight)
+activate arduino
+arduino -> pi: { Full JSON data }
+arduino -> pi: & (Data finished)
+deactivate arduino
+
+==Writing Commands==
+pi -> arduino: %B (Start moving)
+...Separate command...
+pi -> arduino: %C (Stop moving)
+...Separate command...
+pi -> arduino: %D (Change speed)
+pi -> arduino: x (1-3, 1 is slow and 3 is fast, numbers are in ASCII)
+...Separate command...
+pi -> arduino: %E (Rotate the camera using the following rotation data)
+pi -> arduino: { Full JSON data }
+arduino -> pi: & (Data finished)
+...Separate command...
+pi -> arduino: %F (Rotate the robot using the following rotation data)
+pi -> arduino: { Full JSON data }
+arduino -> pi: & (Data finished)
+
+legend
+* All commands are single characters for speed and ease of implementation
+* All characters that are sent in the messages are ASCII characters
+* Some communication examples could be found within pi-arduino-protocol-example.txt
+end legend
+@enduml

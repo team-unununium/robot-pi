@@ -1,0 +1,46 @@
+// Pi -> Arduino: Hello (Message repeats until Arduino says hello back)
+!
+
+// Arduino -> Pi: Hello (Only needs to be sent once, prepares the Pi for communication)
+!
+
+// Pi -> Arduino: Send me all the sensor's data
+%A
+
+// Arduino -> Pi: Here is all the sensor's data
+// "temp": A string of the temperature (encased by double quotes), round to 1 decimal place
+// "humidity": A string of the humidity in percentage (encased by double quotes), round to 1 decimal place
+// "frontObstacle": A string of the distance to the front obstacle (encased by double quotes) in mm, round to 1 decimal place, if there is no obstacle found use "-1.00"
+// "backObstacle": A string of the distance to the back obstacle (encased by double quotes) in mm, round to 1 decimal place, if there is no obstacle found use "-1.00"
+// "co": A string of the raw value of CO measured (encased by double quotes)
+// "ch4": A string of the raw value of CH4 measured (encased by double quotes)
+// "h2": A string of the raw value of H2 measured (encased by double quotes)
+// "lpg": A string of the raw value of LPG measured (encased by double quotes)
+// The ^A and & marks the start and end of the response
+// All 5 variables must be present in this JSON object
+^A{ "temp": "28.4" , "humidity": "65.4", "frontObstacle": "123.4", "backObstacle": "-1.00", "co": "0.0012", "ch4": "0.0001", "h2": "0.0000", "lpg": "0.1750" }&
+
+// Arduino -> Pi: Here is a partial update for the sensor's data
+// This can only be run after at least one @ command has been sent from Arduino -> Pi
+// The ^B and & marks the start and end of the response
+// No need for all 5 variables to be present in this JSON object
+^B{ "temp": "28.8" , "humidity": "51.0", "frontObstacle": "-1.00" }&
+
+// Pi -> Arduino: Start moving
+%B
+
+// Pi -> Arduino: Stop moving 
+%C
+
+// Pi -> Arduino: Change speed to 1/2/3, 1 is slowest and 3 is fastest (The numbers 1, 2 and 3 are in ASCII)
+%D1
+
+// Pi -> Arduino: Here is the relative rotation data for the camera
+// The angular rotation is in radian
+// The %E and & marks the start and end of the response
+%E{ "X": 1.1232345, "Y": -0.1245629, "Z": 0.2553564 }&
+
+// Pi -> Arduino: Here is the relative rotation data for the robot
+// The angular rotation is in radian
+// The %F and & marks the start and end of the response
+%F{ "X": 1.1232345, "Y": -0.1245629, "Z": 0.2553564 }&
