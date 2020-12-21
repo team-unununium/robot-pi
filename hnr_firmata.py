@@ -77,8 +77,7 @@ class FirmataProgram:
             self.arduinoOnline = False
             self.transferringData = False
         else:
-            logger.warning(f"Firmata program is not working, cannot stop program")
-            print("An error occured while attempting to stop the Firmata program. Please check the logs for more information.")
+            logger.warning(f"Firmata program is not working (already stopped)")
 
     # Initializes the transfer related variables
     def prepTransfer(self, transferChr):

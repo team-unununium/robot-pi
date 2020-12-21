@@ -2,13 +2,37 @@ from dotenv import load_dotenv
 load_dotenv()
 
 import logging
+import platform
 import requests
 import signal
 
-# Set up logging
-logging.basicConfig(filename="robot.log", filemode="w", level=logging.INFO, format="%(asctime)s: %(name)s - %(levelname)s: %(message)s", datefmt="%d-%m-%Y %I:%M:%S %p")
-logger = logging.getLogger('Main')
+# Set up logging (Do not output to console)
+if platform.system() == "Windows":
+    logging.basicConfig(filename="NUL", level=logging.INFO)
+else:
+    # MacOS and Linux both have /dev/null
+    logging.basicConfig(filename="/dev/null", level=logging.INFO)
+formatter = logging.Formatter(fmt="%(asctime)s: %(name)s - %(levelname)s: %(message)s", datefmt="%d-%m-%Y %I:%M:%S %p")
 
+# Info level only filter
+class InfoOnlyFilter(logging.Filter):
+    def filter(self, record):
+        return record.levelname == "INFO"
+
+# Separate info loggers from the rest
+log_error = logging.FileHandler("robot-error.log", "w+")
+log_error.setLevel(logging.WARNING)
+log_error.setFormatter(formatter)
+log_info = logging.FileHandler("robot-info.log", "w+")
+log_info.setLevel(logging.INFO)
+log_info.setFormatter(formatter)
+log_info.addFilter(InfoOnlyFilter())
+
+logging.getLogger('').addHandler(log_error)
+logging.getLogger('').addHandler(log_info)
+logger = logging.getLogger("Main")
+
+# User defined modules
 import hnr_settings as settings
 settings.init()
 import hnr_socketio as SocketProgram
@@ -19,11 +43,11 @@ def signal_handler(sig, frame):
     if settings.programStarted:
         settings.sio.disconnect()
         settings.firmataProgram.stop()
-        settings.cameraProgram.stop()
         settings.programStarted = False
     raise SystemExit
 signal.signal(signal.SIGINT, signal_handler)
 
+# Main program start
 def main():
     logger.info("Main program started")
     logger.debug(f"GUID is {settings.GUID}, server URL is {settings.SERVER_URL}, server-robot secret is {settings.SERVER_ROBOT_SECRET}")
