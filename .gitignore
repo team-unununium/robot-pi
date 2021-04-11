@@ -112,6 +112,8 @@ venv.bak/
 bin/
 include/
 Scripts/
+.vscode
+.vscode/*
 
 # Spyder project settings
 .spyderproject
