@@ -41,11 +41,11 @@ pi -> arduino: { Full JSON data }
 arduino -> pi: & (Data finished)
 ...Separate command...
 pi -> arduino: %F (Rotate the robot using the following rotation data)
-pi -> arduino: { Full JSON data }
+pi -> arduino: x (Rotation speed in radian / second)
 arduino -> pi: & (Data finished)
 
 legend
-* All commands are single characters for speed and ease of implementation
+* All commands are in the format ^[%|^][A-Z]([A-Za-z0-9.,-{}"' ]*[&])?$ for ease of implementation
 * All characters that are sent in the messages are ASCII characters
 * Some communication examples could be found within pi-arduino-protocol-example.txt
 end legend

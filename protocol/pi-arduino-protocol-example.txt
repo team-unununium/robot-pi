@@ -41,6 +41,6 @@
 %E{ "X": 1.1232345, "Y": -0.1245629, "Z": 0.2553564 }&
 
 // Pi -> Arduino: Here is the relative rotation data for the robot
-// The angular rotation is in radian
+// The angular rotation is in radian/s
 // The %F and & marks the start and end of the response
-%F{ "X": 1.1232345, "Y": -0.1245629, "Z": 0.2553564 }&
+%F-1.234&
