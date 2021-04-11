@@ -8,7 +8,7 @@ logger = logging.getLogger("Settings")
 def init():
     logger.info("Settings file initiated")
     # Main programs
-    global firmataProgram
+    global arduinoProgram
     global socketProgram
 
     # Static variables
@@ -16,8 +16,7 @@ def init():
     global SERVER_URL
     global SERVER_ROBOT_SECRET
     global ACCESS_TOKEN
-    global INPUT_PIN
-    global OUTPUT_PIN
+    global ARDUINO_PORT
 
     # Dynamic variables
     global sio
@@ -33,7 +32,7 @@ def init():
     OUTPUT_PIN = environ.get("OUTPUT_PIN")
 
     # Initialize dynamic variables
-    firmataProgram = None
+    arduinoProgram = None
     socketProgram = None
 
     sio = socketio.Client(reconnection_attempts=10)
@@ -51,16 +50,11 @@ def init():
         raise ValueError("SERVER_ROBOT_SECRET should be provided as environment variable")
 
     # Optional variables
-    if INPUT_PIN is None:
-        logger.info("INPUT_PIN not provided, defaults to d:0:o")
-        INPUT_PIN = "d:0:o"
+    if ARDUINO_PORT is None:
+        logger.info("ARDUINO_PORT not provided, defaults to /dev/ttyUSB0")
+        INPUT_PIN = "/dev/ttyUSB0"
     else:
-        logger.info(f"INPUT_PIN is {INPUT_PIN}")
-    if OUTPUT_PIN is None:
-        logger.info("OUTPUT_PIN not provided, defaults to d:0:i")
-        OUTPUT_PIN = "d:0:i"
-    else:
-        logger.info(f"OUTPUT_PIN is {OUTPUT_PIN}")
+        logger.info(f"ARDUINO_PORT is {ARDUINO_PORT}")
 
 if __name__ == "__main__":
     logger.critical("Module hnr_settings ran as program, exiting")

@@ -1,7 +1,7 @@
 import logging
 import requests
 
-from hnr_firmata import FirmataProgram
+from hnr_arduino import ArduinoProgram
 import hnr_settings as settings
 from hnr_settings import sio
 
@@ -52,9 +52,9 @@ def connect():
 def authenticated(data):
     logger.info("Authentication successful, starting the Arduino and PiCamera modules")
     # The event may fire multiple times
-    if settings.firmataProgram is None:
-        settings.firmataProgram = FirmataProgram()
-        settings.firmataProgram.start()
+    if settings.arduinoProgram is None:
+        settings.arduinoProgram = arduinoProgram()
+        settings.arduinoProgram.start()
     settings.programRunning = True
 
 @settings.sio.event
@@ -68,36 +68,44 @@ def unauthorized(data):
         sio.disconnect()
 
 @settings.sio.event
+def robotRotateCamera(data):
+    if settings.programRunning:
+        logger.info("Received request to rotate robot camera")
+        settings.arduinoProgram.rotateCamera(data)
+    else:
+        logger.warning("Received request to rotate robot camera but Arduino program is not running")
+
+@settings.sio.event
 def robotRotate(data):
     if settings.programRunning:
         logger.info("Received request to rotate robot")
-        settings.firmataProgram.rotate(data)
+        settings.arduinoProgram.rotate(data)
     else:
-        logger.warning("Received request to rotate robot but Firmata program is not running")
+        logger.warning("Received request to rotate robot but Arduino program is not running")
 
 @settings.sio.event
 def robotStartMoving(data):
     if settings.programRunning:
         logger.info("Received request to start moving robot")
-        settings.firmataProgram.startMoving()
+        settings.arduinoProgram.startMoving()
     else:
-        logger.warning("Received request to start moving robot but Firmata program is not running")
+        logger.warning("Received request to start moving robot but Arduino program is not running")
 
 @settings.sio.event
 def robotStopMoving(data):
     if settings.programRunning:
         logger.info("Received request to stop moving robot")
-        settings.firmataProgram.stopMoving()
+        settings.arduinoProgram.stopMoving()
     else:
-        logger.warning("Received request to stop moving robot but Firmata program is not running")
+        logger.warning("Received request to stop moving robot but Arduino program is not running")
 
 @settings.sio.event
-def robotRequestUpdateAll():
+def robotChangeSpeed(data):
     if settings.programRunning:
-        logger.info("Received request to update all data sent to the server")
-        settings.firmataProgram.requestData()
+        logger.info("Received request to change the velocity of the robot")
+        settings.arduinoProgram.changeSpeed(data)
     else:
-        logger.warning("Received request to update all data but Firmata program is not running")
+        logger.warning("Received request to change the velocity of the robot but Arduino program is not running")
 
 @settings.sio.event
 def disconnect():

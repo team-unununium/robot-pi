@@ -42,7 +42,7 @@ def signal_handler(sig, frame):
     logger.info("SIGINT detected, shutdown initiated")
     if settings.programStarted:
         settings.sio.disconnect()
-        settings.firmataProgram.stop()
+        settings.arduinoProgram.stop()
         settings.programStarted = False
     raise SystemExit
 signal.signal(signal.SIGINT, signal_handler)
