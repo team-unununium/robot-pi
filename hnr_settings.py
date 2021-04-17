@@ -28,8 +28,7 @@ def init():
     GUID = str(uuid.uuid4())
     SERVER_URL = environ.get("SERVER_URL")
     SERVER_ROBOT_SECRET = environ.get("SERVER_ROBOT_SECRET")
-    INPUT_PIN = environ.get("INPUT_PIN")
-    OUTPUT_PIN = environ.get("OUTPUT_PIN")
+    ARDUINO_PORT = environ.get("ARDUINO_PORT")
 
     # Initialize dynamic variables
     arduinoProgram = None
@@ -52,7 +51,7 @@ def init():
     # Optional variables
     if ARDUINO_PORT is None:
         logger.info("ARDUINO_PORT not provided, defaults to /dev/ttyUSB0")
-        INPUT_PIN = "/dev/ttyUSB0"
+        ARDUINO_PORT = "/dev/ttyUSB0"
     else:
         logger.info(f"ARDUINO_PORT is {ARDUINO_PORT}")
 

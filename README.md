@@ -29,8 +29,7 @@ After cloning the repository, just run  `pip3 install -r requirements.txt` then 
 - `SERVER_ROBOT_SECRET`: The secret used to verify the robot's identity with the server, this variable should be the same on the server module as well.
 
 Some optional environment variables include:
-- `INPUT_PIN`: A string for the input pin for the robot to listen from, defaults to d:0:i.
-- `OUTPUT_PIN`: A string for the output pin for the robot to write to, defaults to d:0:o.
+- `ARDUINO_PORT`: A string for the port that the Arduino is connected to, defaults to /dev/ttyUSB0.
 
 After that, just run `python main.py` and you should be good to go!
 If you wish to transmit a livestream to the clients through Twitch, you would need to use an external script to do so. The link for the script that is currently being used by us can be found [here](https://gist.githubusercontent.com/russfeld/0878b1f8eaf7409136b9125ce5e1458f/raw/62824c1021f816a13046f1aba7722b8ac519c28d/picam-stream.sh).

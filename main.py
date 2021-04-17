@@ -36,6 +36,7 @@ logger = logging.getLogger("Main")
 import hnr_settings as settings
 settings.init()
 import hnr_socketio as SocketProgram
+import hnr_video as VideoProgram
 
 # Graceful exit from SIGINT
 def signal_handler(sig, frame):
@@ -81,6 +82,8 @@ def main():
     if req_success:
         settings.socketProgram = SocketProgram
         settings.socketProgram.start()
+        settings.videoProgram = videoProgram
+        settings.videoProgram.start()
     else:
         print("An error occured while getting the access token. Please check the logs for more information.")
         logger.info("Program shutdown due to unable to get the access token")

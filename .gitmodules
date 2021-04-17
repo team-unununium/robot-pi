@@ -1,3 +1,6 @@
 [submodule "lib-jitsi-meet"]
 	path = lib-jitsi-meet
 	url = git@github.com:jitsi/lib-jitsi-meet.git
+[submodule "geckodriver"]
+	path = geckodriver
+	url = git@github.com:mozilla/geckodriver.git
