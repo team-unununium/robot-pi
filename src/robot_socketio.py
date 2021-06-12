@@ -46,10 +46,10 @@ def deleteAccessData():
         logger.error(f"Deletion request failed with unknown error code {req_code}")
 
 def sendSessionInfo(data):
-    settings.sio.emit("robotSendSessettings.sionInfo", data)
+    settings.sio.emit("robotSendSessionInfo", data)
 
 def updateData(data):
-    settings.sio.emit("robotSendSessettings.sionInfo", data)
+    settings.sio.emit("robotSendSessionInfo", data)
 
 @settings.sio.event
 def connect():
@@ -65,7 +65,7 @@ def connect():
 
 @settings.sio.event
 def testRobot():
-    logger.info("Testing event received successfully from server, connectionnconfirmed successful")
+    logger.info("Testing event received successfully from server, connection confirmed successful")
     print("Socket.IO module started successfully")
 
 @settings.sio.event

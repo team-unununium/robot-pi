@@ -36,7 +36,7 @@ logger = logging.getLogger("Main")
 import src.robot_settings as settings
 settings.init()
 import src.robot_socketio as SocketProgram
-import src.robot_video as VideoProgram
+from src.robot_video import VideoProgram
 
 # Graceful exit from SIGINT
 def signal_handler(sig, frame):
@@ -82,7 +82,7 @@ def main():
     if req_success:
         settings.socketProgram = SocketProgram
         settings.socketProgram.start()
-        settings.videoProgram = videoProgram
+        settings.videoProgram = VideoProgram()
         settings.videoProgram.start()
     else:
         print("An error occured while getting the access token. Please check the logs for more information.")

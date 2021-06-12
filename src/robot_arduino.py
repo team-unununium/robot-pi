@@ -4,7 +4,7 @@ import logging
 import time
 import serial
 
-import robot_settings as settings
+import src.robot_settings as settings
 
 logger = logging.getLogger("Arduino Module")
 
@@ -43,7 +43,7 @@ class ArduinoProgram:
 
     # Writes a symbol to the Arduino
     def writeToPort(self, dataString):
-        self.serialPort.write(unicode(dataString))
+        self.serialPort.write(str(dataString))
 
     # Main data handler
     def dataHandler(self):

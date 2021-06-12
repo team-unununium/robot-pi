@@ -1,5 +1,4 @@
 import logging
-from av import VideoFrame
 
 import src.robot_settings as settings
 

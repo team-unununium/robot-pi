@@ -10,6 +10,7 @@ def init():
     # Main programs
     global arduinoProgram
     global socketProgram
+    global videoProgram
 
     # Static variables
     global GUID
@@ -33,6 +34,7 @@ def init():
     # Initialize dynamic variables
     arduinoProgram = None
     socketProgram = None
+    videoProgram = None
 
     sio = socketio.Client(reconnection_attempts=10)
     programStarted = True
