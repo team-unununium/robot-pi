@@ -33,10 +33,10 @@ logging.getLogger('').addHandler(log_info)
 logger = logging.getLogger("Main")
 
 # User defined modules
-import hnr_settings as settings
+import src.robot_settings as settings
 settings.init()
-import hnr_socketio as SocketProgram
-import hnr_video as VideoProgram
+import src.robot_socketio as SocketProgram
+import src.robot_video as VideoProgram
 
 # Graceful exit from SIGINT
 def signal_handler(sig, frame):

@@ -56,5 +56,5 @@ def init():
         logger.info(f"ARDUINO_PORT is {ARDUINO_PORT}")
 
 if __name__ == "__main__":
-    logger.critical("Module hnr_settings ran as program, exiting")
+    logger.critical("Module robot_settings ran as program, exiting")
     raise RuntimeError("This file is a module and should not be run as a program")

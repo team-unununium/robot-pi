@@ -4,7 +4,7 @@ import logging
 import time
 import serial
 
-import hnr_settings as settings
+import robot_settings as settings
 
 logger = logging.getLogger("Arduino Module")
 
@@ -76,5 +76,5 @@ class ArduinoProgram:
         self.writeToPort(f"%E{str(velocityData)}")
 
 if __name__ == "__main__":
-    logger.critical("Module hnr_arduino ran as program, exiting")
+    logger.critical("Module robot_arduino ran as program, exiting")
     raise RuntimeError("This file is a module and should not be run as a program")

@@ -1,19 +1,31 @@
 import logging
 import requests
+import traceback
 
-from hnr_arduino import ArduinoProgram
-import hnr_settings as settings
-from hnr_settings import sio
+from src.robot_arduino import ArduinoProgram
+from src.robot_video import VideoProgram
+import src.robot_settings as settings
+from src.robot_settings import sio
 
 logger = logging.getLogger("Socket Module")
 
+# Included code from https://github.com/aiortc/aiortc/blob/main/examples/videostream-cli/cli.py. See LICENSE_AIORTC for the license.
+
 def start():
     logger.info("Initiated Socket.IO connection with server")
-    settings.sio.connect(settings.SERVER_URL)
-    settings.sio.wait()
+    try:
+        settings.sio.connect(f"{settings.SERVER_URL}", headers={ "guid": settings.GUID, "token": settings.ACCESS_TOKEN }, namespaces=['/'], socketio_path='socket.io')
+        settings.sio.wait()
+    except Exception as e:
+        logger.warning("Connection to Socket.IO server failed due to error " + str(e))
+        traceback.print_exc() # DEBUG: Temp code
 
     # Anything after this should not be accessible as the program should pause indefinitely at settings.sio.wait()
     logger.warning("Unable to connect to server through Socket.IO, deleting client data from database then exiting")
+    deleteAccessData()
+    print("An error occured while connecting to the Socket.IO server. Please check the logs for more information.")
+
+def deleteAccessData():
     req_json = {
         "guid": settings.GUID,
         "token": settings.ACCESS_TOKEN
@@ -32,7 +44,6 @@ def start():
         logger.error("Deletion request failed with error code 500 (Error occured while attempting to query database)")
     else:
         logger.error(f"Deletion request failed with unknown error code {req_code}")
-    print("An error occured while connecting to the Socket.IO server. Please check the logs for more information.")
 
 def sendSessionInfo(data):
     settings.sio.emit("robotSendSessettings.sionInfo", data)
@@ -42,20 +53,32 @@ def updateData(data):
 
 @settings.sio.event
 def connect():
-    logger.info("Socket.IO connection with server established, authenticating")
-    settings.sio.emit("authentication", { 
-        "guid": settings.GUID,
-        "token": settings.ACCESS_TOKEN
-    })
-
-@settings.sio.event
-def authenticated(data):
-    logger.info("Authentication successful, starting the Arduino and PiCamera modules")
+    logger.info("Socket.IO connection with server established")
     # The event may fire multiple times
     if settings.arduinoProgram is None:
-        settings.arduinoProgram = arduinoProgram()
+        settings.arduinoProgram = ArduinoProgram()
         settings.arduinoProgram.start()
+    if settings.videoProgram is None:
+        settings.videoProgram = VideoProgram()
+        settings.videoProgram.start()
     settings.programRunning = True
+
+@settings.sio.event
+def testRobot():
+    logger.info("Testing event received successfully from server, connectionnconfirmed successful")
+    print("Socket.IO module started successfully")
+
+@settings.sio.event
+def testOperator():
+    logger.error("Server recognized robot as operator, panicking by shutting down")
+    print("An error occurred with the Socket.IO communication with the server, please check the logs for more information")
+    settings.sio.disconnect()
+
+@settings.sio.event
+def testClient():
+    logger.error("Server recognized robot as client, panicking by shutting down")
+    print("An error occurred with the Socket.IO communication with the server, please check the logs for more information")
+    settings.sio.disconnect()
 
 @settings.sio.event
 def unauthorized(data):
@@ -84,7 +107,7 @@ def robotRotate(data):
         logger.warning("Received request to rotate robot but Arduino program is not running")
 
 @settings.sio.event
-def robotStartMoving(data):
+def robotStartMoving():
     if settings.programRunning:
         logger.info("Received request to start moving robot")
         settings.arduinoProgram.startMoving()
@@ -92,7 +115,7 @@ def robotStartMoving(data):
         logger.warning("Received request to start moving robot but Arduino program is not running")
 
 @settings.sio.event
-def robotStopMoving(data):
+def robotStopMoving():
     if settings.programRunning:
         logger.info("Received request to stop moving robot")
         settings.arduinoProgram.stopMoving()
@@ -110,7 +133,8 @@ def robotChangeSpeed(data):
 @settings.sio.event
 def disconnect():
     logger.info("Disconnected from server")
+    deleteAccessData()
 
 if __name__ == "__main__":
-    logger.critical("Module hnr_socketio ran as program, exiting")
+    logger.critical("Module robot_socketio ran as program, exiting")
     raise RuntimeError("This file is a module and should not be run as a program")
