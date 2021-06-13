@@ -10,11 +10,10 @@ logger = logging.getLogger("Arduino Module")
 
 class ArduinoProgram:
     def __init__(self):
-        logger.info("Firmata program initiated")
+        logger.info("Arduino program initiated")
         self.working = False # Whether the module is up and running
         self.arduinoOnline = False # Whether the Arduino is detected
         self.dataThread = Thread(target=self.dataHandler) # The thread managing the data input from the Arduino
-        self.dataInput = None # The last line of valid input that is received from the Arduino
         self.info = {} # The info of the Arduino
 
         try:
@@ -30,11 +29,11 @@ class ArduinoProgram:
             self.dataThread.start()
         else:
             logger.warning(f"Arduino program is not working, cannot start program")
-            print("An error occured while attempting to start the Firmata program. Please check the logs for more information.")
+            print("An error occured while attempting to start the Arduino program. Please check the logs for more information.")
 
     def stop(self):
         if self.working:
-            logger.info("Firmata program stopped")
+            logger.info("Arduino program stopped")
             self.serialPort.close()
             self.working = False
             self.arduinoOnline = False

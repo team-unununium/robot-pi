@@ -23,7 +23,7 @@ def start():
     # Anything after this should not be accessible as the program should pause indefinitely at settings.sio.wait()
     logger.warning("Unable to connect to server through Socket.IO, deleting client data from database then exiting")
     deleteAccessData()
-    print("An error occured while connecting to the Socket.IO server. Please check the logs for more information.")
+    print("An error occurred while connecting to the Socket.IO server. Please check the logs for more information.")
 
 def deleteAccessData():
     req_json = {
@@ -87,7 +87,7 @@ def unauthorized(data):
     settings.disconnectCount += 1
     if settings.disconnectCount == 10:
         logger.error("Socket connection has been rejected 10 times, exiting")
-        print("An error occured in establishing a connection to the Socket.IO server. Please check the logs for more information.")
+        print("An error occurred in establishing a connection to the Socket.IO server. Please check the logs for more information.")
         sio.disconnect()
 
 @settings.sio.event
