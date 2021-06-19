@@ -12,7 +12,7 @@ logger = logging.getLogger("Video Stream")
 class VideoProgram:
     def __init__(self):
         logger.info("Video program initiated")
-        self.working = False # Whether the module is up and running
+        self.working = True # Whether the module is up and running
         self.dataThread = Thread(target=self.videoThread)
         self.camera = PiCamera()
 
@@ -20,7 +20,6 @@ class VideoProgram:
         if self.working:
             try:
                 logger.info("Video program started")
-                self.working = True
                 self.dataThread.start()
             except Exception as e:
                 logger.error(f"ICE handshake failed with the following error: {str(e)}")
@@ -34,6 +33,7 @@ class VideoProgram:
     def videoThread(self):
         self.camera.start_preview()
         time.sleep(2) # Waiting time for camera to start up
+        self.camera.stop_preview()
         while self.working:
             bufferStart = time.time()
             stream = BytesIO()
@@ -53,11 +53,16 @@ class VideoProgram:
                 stream.seek(0)
                 stream.truncate()
             bufferBytes += struct.pack('<L', 0)
+            Thread(target=self.sendFootage, args=(bufferBytes,)).start()
+    
+    def sendFootage(self, bufferBytes):
+        if settings.socketProgram is not None:
             settings.socketProgram.sendVideoFootage(bufferBytes)
 
     def stop(self):
         if self.working:
             logger.info("Video program stopped")
+            self.dataThread.join()
             self.working = False
         else:
             logger.warning(f"Video program is not working (already stopped)")
