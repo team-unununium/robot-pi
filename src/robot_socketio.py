@@ -18,7 +18,7 @@ def start():
         settings.sio.wait()
     except Exception as e:
         logger.warning("Connection to Socket.IO server failed due to error " + str(e))
-        traceback.print_exc() # DEBUG: Temp code
+        traceback.print_exc()
 
     # Anything after this should not be accessible as the program should pause indefinitely at settings.sio.wait()
     logger.warning("Unable to connect to server through Socket.IO, deleting client data from database then exiting")
@@ -50,6 +50,9 @@ def sendSessionInfo(data):
 
 def updateData(data):
     settings.sio.emit("robotSendSessionInfo", data)
+
+def sendVideoFootage(data):
+    settings.sio.emit("robotSendVideo", data)
 
 @settings.sio.event
 def connect():

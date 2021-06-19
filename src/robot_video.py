@@ -1,6 +1,9 @@
-import aioice
-import asyncio
+from io import BytesIO
+from threading import Thread
+from picamera import PiCamera
 import logging
+import struct
+import time
 
 import src.robot_settings as settings
 
@@ -9,36 +12,16 @@ logger = logging.getLogger("Video Stream")
 class VideoProgram:
     def __init__(self):
         logger.info("Video program initiated")
-        if len(settings.STUN_URL.split(":")) == 2:
-            stun_port = int(settings.STUN_URL.split(":")[1])
-        else:
-            stun_port = 19302
-        if settings.TURN_URL is not None and len(settings.TURN_URL.split(":")) == 2:
-            turn_port = int(settings.TURN_URL.split(":")[1])
-        else:
-            turn_port = 3478
-        self.testEventLoop()
-        if settings.TURN_URL is None:
-            self.connection = self.connection = aioice.Connection(ice_controlling=True, stun_server=(settings.STUN_URL.split(":")[0], stun_port))
-        else:
-            self.connection = aioice.Connection(ice_controlling=True, stun_server=(settings.STUN_URL.split(":")[0], stun_port), turn_server=(settings.TURN_URL.split(":")[0], turn_port), turn_username=settings.TURN_USERNAME, turn_password=settings.TURN_PASSWORD, turn_transport=settings.TURN_TRANSPORT, turn_ssl=settings.TURN_TLS)
-        self.working = True # Whether the module is up and running
-        self.clients = [] # The list of recognised remote candidates
-
-    def testEventLoop(self):
-        try:
-            asyncio.get_event_loop()
-        except Exception as e:
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
+        self.working = False # Whether the module is up and running
+        self.dataThread = Thread(target=self.videoThread)
+        self.camera = PiCamera()
 
     def start(self):
         if self.working:
             try:
                 logger.info("Video program started")
-                loop = asyncio.new_event_loop()
-                loop.run_until_complete(self.asyncStart())
                 self.working = True
+                self.dataThread.start()
             except Exception as e:
                 logger.error(f"ICE handshake failed with the following error: {str(e)}")
                 print("An error occured while attempting to start the video program. Please check the logs for more information.")
@@ -47,10 +30,30 @@ class VideoProgram:
             logger.warning(f"Video program is not working, cannot start program")
             print("An error occured while attempting to start the video program. Please check the logs for more information.")
 
-    async def asyncStart(self):
-        await self.connection.gather_candidates()
-        logger.info(f"Local candidates: {self.connection.local_candidates}")
-        print("Waiting for peers on video module")
+    # Main data handler
+    def videoThread(self):
+        self.camera.start_preview()
+        time.sleep(2) # Waiting time for camera to start up
+        while self.working:
+            bufferStart = time.time()
+            stream = BytesIO()
+            bufferBytes = bytes()
+            # From Basic Recipe 8 from picamera
+            for foo in self.camera.capture_continuous(stream, 'jpeg'):
+                # Write the length of the capture to the stream and flush to
+                # ensure it actually gets sent
+                bufferBytes += struct.pack('<L', stream.tell())
+                # Rewind the stream and send the image data over the wire
+                stream.seek(0)
+                bufferBytes += stream.read()
+                # If we've been capturing for more than 30 seconds, quit
+                if time.time() - bufferStart > settings.BUFFER_DURATION:
+                    break
+                # Reset the stream for the next capture
+                stream.seek(0)
+                stream.truncate()
+            bufferBytes += struct.pack('<L', 0)
+            settings.socketProgram.sendVideoFootage(bufferBytes)
 
     def stop(self):
         if self.working:
@@ -58,3 +61,7 @@ class VideoProgram:
             self.working = False
         else:
             logger.warning(f"Video program is not working (already stopped)")
+
+if __name__ == "__main__":
+    logger.critical("Module robot_video ran as program, exiting")
+    raise RuntimeError("This file is a module and should not be run as a program")

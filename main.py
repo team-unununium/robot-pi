@@ -50,6 +50,9 @@ signal.signal(signal.SIGINT, signal_handler)
 
 # Main program start
 def main():
+    print("=" * 30)
+    print("Unununium Robot (Raspberry Pi)")
+    print("=" * 30)
     logger.info("Main program started")
     logger.debug(f"GUID is {settings.GUID}, server URL is {settings.SERVER_URL}, server-robot secret is {settings.SERVER_ROBOT_SECRET}")
 

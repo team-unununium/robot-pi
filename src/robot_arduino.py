@@ -57,22 +57,42 @@ class ArduinoProgram:
             time.sleep(0.5)
 
     def startMoving(self):
-        self.writeToPort("%A")
+        if self.working:
+            self.writeToPort("%A")
+            logger.debug("Outgoing command A (start moving) sent")
+        else:
+            logger.debug("Outgoing command A (start moving) called when Arduino program has not started")
 
     def stopMoving(self):
-        self.writeToPort("%B")
+        if self.working:
+            self.writeToPort("%B")
+            logger.debug("Outgoing command B (stop moving) sent")
+        else:
+            logger.debug("Outgoing command B (stop moving) called when Arduino program has not started")
 
     def changeSpeed(self, data):
-        velocityData = data["velocity"]
-        self.writeToPort(f"%C{str(velocityData)}")
+        if self.working:
+            velocityData = data["velocity"]
+            self.writeToPort(f"%C{str(velocityData)}")
+            logger.debug(f"Outgoing command C (set velocity) sent with value {str(velocityData)}")
+        else:
+            logger.debug("Outgoing command C (set velocity) called when Arduino program has not started")
 
     def rotateCamera(self, data):
-        velocityData = data["velocity"]
-        self.writeToPort(f"%D{str(velocityData)}")
+        if self.working:
+            velocityData = data["velocity"]
+            self.writeToPort(f"%D{str(velocityData)}")
+            logger.debug(f"Outgoing command D (rotate camera) sent with value {str(velocityData)}")
+        else:
+            logger.debug("Outgoing command D (rotate camera) called when Arduino program has not started")
 
     def rotate(self, data):
-        velocityData = data["velocity"]
-        self.writeToPort(f"%E{str(velocityData)}")
+        if self.working:
+            velocityData = data["velocity"]
+            self.writeToPort(f"%E{str(velocityData)}")
+            logger.debug(f"Outgoing command E (rotate robot) sent with value {str(velocityData)}")
+        else:
+            logger.debug("Outgoing command E (rotate robot) called when Arduino program has not started")
 
 if __name__ == "__main__":
     logger.critical("Module robot_arduino ran as program, exiting")
