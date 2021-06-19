@@ -32,11 +32,11 @@ class ArduinoProgram:
             print("An error occured while attempting to start the Arduino program. Please check the logs for more information.")
 
     def stop(self):
+        self.working = False
+        self.arduinoOnline = False
         if self.working:
             logger.info("Arduino program stopped")
             self.serialPort.close()
-            self.working = False
-            self.arduinoOnline = False
         else:
             logger.warning(f"Arduino program is not working (already stopped)")
 

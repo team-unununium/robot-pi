@@ -46,10 +46,12 @@ def deleteAccessData():
         logger.error(f"Deletion request failed with unknown error code {req_code}")
 
 def updateData(data):
-    settings.sio.emit("robotUpdateData", data)
+    if settings.sio.connected:
+        settings.sio.emit("robotUpdateData", data)
 
 def sendVideoFootage(data):
-    settings.sio.emit("robotSendVideo", data)
+    if settings.sio.connected:
+        settings.sio.emit("robotSendVideo", data)
 
 @settings.sio.event
 def connect():

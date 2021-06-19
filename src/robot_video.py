@@ -18,13 +18,8 @@ class VideoProgram:
 
     def start(self):
         if self.working:
-            try:
-                logger.info("Video program started")
-                self.dataThread.start()
-            except Exception as e:
-                logger.error(f"ICE handshake failed with the following error: {str(e)}")
-                print("An error occured while attempting to start the video program. Please check the logs for more information.")
-                self.working = False
+            logger.info("Video program started")
+            self.dataThread.start()
         else:
             logger.warning(f"Video program is not working, cannot start program")
             print("An error occured while attempting to start the video program. Please check the logs for more information.")
@@ -34,26 +29,14 @@ class VideoProgram:
         self.camera.start_preview()
         time.sleep(2) # Waiting time for camera to start up
         self.camera.stop_preview()
+        self.camera.resolution = (1024, 768)
         while self.working:
-            bufferStart = time.time()
             stream = BytesIO()
-            bufferBytes = bytes()
-            # From Basic Recipe 8 from picamera
             for foo in self.camera.capture_continuous(stream, 'jpeg'):
-                # Write the length of the capture to the stream and flush to
-                # ensure it actually gets sent
-                bufferBytes += struct.pack('<L', stream.tell())
-                # Rewind the stream and send the image data over the wire
                 stream.seek(0)
-                bufferBytes += stream.read()
-                # If we've been capturing for more than 30 seconds, quit
-                if time.time() - bufferStart > settings.BUFFER_DURATION:
-                    break
-                # Reset the stream for the next capture
+                Thread(target=self.sendFootage, args=(stream.read(),)).start()
                 stream.seek(0)
                 stream.truncate()
-            bufferBytes += struct.pack('<L', 0)
-            Thread(target=self.sendFootage, args=(bufferBytes,)).start()
     
     def sendFootage(self, bufferBytes):
         if settings.socketProgram is not None:
@@ -61,9 +44,8 @@ class VideoProgram:
 
     def stop(self):
         if self.working:
-            logger.info("Video program stopped")
-            self.dataThread.join()
             self.working = False
+            logger.info("Video program stopped")
         else:
             logger.warning(f"Video program is not working (already stopped)")
 

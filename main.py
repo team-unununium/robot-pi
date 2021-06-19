@@ -42,6 +42,7 @@ from src.robot_video import VideoProgram
 def signal_handler(sig, frame):
     logger.info("SIGINT detected, shutdown initiated")
     if settings.programStarted:
+        settings.videoProgram.stop()
         settings.sio.disconnect()
         settings.arduinoProgram.stop()
         settings.programStarted = False
