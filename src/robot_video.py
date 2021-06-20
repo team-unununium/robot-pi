@@ -2,7 +2,6 @@ from io import BytesIO
 from threading import Thread
 from picamera import PiCamera
 import logging
-import struct
 import time
 
 import src.robot_settings as settings
@@ -27,17 +26,21 @@ class VideoProgram:
     # Main data handler
     def videoThread(self):
         self.camera.start_preview()
-        time.sleep(2) # Waiting time for camera to start up
+        time.sleep(1) # Waiting time for camera to start up
         self.camera.stop_preview()
-        self.camera.resolution = (1024, 768)
+        self.camera.resolution = (settings.CAMERA_WIDTH, settings.CAMERA_HEIGHT)
+        self.camera.framerate = settings.CAMERA_FPS
+        stream = BytesIO()
         while self.working:
-            stream = BytesIO()
-            for foo in self.camera.capture_continuous(stream, 'jpeg'):
-                stream.seek(0)
-                Thread(target=self.sendFootage, args=(stream.read(),)).start()
-                stream.seek(0)
-                stream.truncate()
-    
+            self.camera.start_recording(stream, format='h264', quality=21)
+            self.camera.wait_recording(settings.BUFFER_DURATION)
+            self.camera.stop_recording()
+            stream.seek(0)
+            bufferBytes = stream.read()
+            stream.seek(0)
+            stream.truncate()
+            Thread(target=self.sendFootage, args=(bufferBytes,)).start()
+
     def sendFootage(self, bufferBytes):
         if settings.socketProgram is not None:
             settings.socketProgram.sendVideoFootage(bufferBytes)

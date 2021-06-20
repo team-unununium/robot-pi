@@ -14,7 +14,7 @@ logger = logging.getLogger("Socket Module")
 def start():
     logger.info("Initiated Socket.IO connection with server")
     try:
-        settings.sio.connect(f"{settings.SERVER_URL}", headers={ "guid": settings.GUID, "token": settings.ACCESS_TOKEN }, namespaces=['/'], socketio_path='socket.io')
+        settings.sio.connect(f"{settings.SERVER_URL}", headers={ "guid": settings.GUID, "token": settings.ACCESS_TOKEN, "bufferDuration": str(settings.BUFFER_DURATION) }, namespaces=['/'], socketio_path='socket.io')
         settings.sio.wait()
     except Exception as e:
         logger.warning("Connection to Socket.IO server failed due to error " + str(e))

@@ -22,6 +22,9 @@ def init():
     global ACCESS_TOKEN
     global ARDUINO_PORT
     global BUFFER_DURATION
+    global CAMERA_WIDTH
+    global CAMERA_HEIGHT
+    global CAMERA_FPS
 
     # Dynamic variables
     global sio
@@ -35,6 +38,9 @@ def init():
     SERVER_ROBOT_SECRET = environ.get("SERVER_ROBOT_SECRET")
     ARDUINO_PORT = environ.get("ARDUINO_PORT")
     BUFFER_DURATION = environ.get("BUFFER_DURATION")
+    CAMERA_WIDTH = environ.get("CAMERA_WIDTH")
+    CAMERA_HEIGHT = environ.get("CAMERA_HEIGHT")
+    CAMERA_FPS = environ.get("CAMERA_FPS")
 
     # Initialize dynamic variables
     arduinoProgram = None
@@ -70,6 +76,33 @@ def init():
     else:
         logger.warning("Invalid BUFFER_DURATION provided, defaults to 0.4 seconds")
         BUFFER_DURATION = 0.4
+    
+    if CAMERA_WIDTH is None:
+        logger.info("CAMERA_WIDTH not provided, defaults to 1280")
+        CAMERA_WIDTH = 1280
+    elif CAMERA_WIDTH.isDigit():
+        logger.info(f"CAMERA_WIDTH is {CAMERA_WIDTH}")
+    else:
+        logger.warning("Invalid CAMERA_WIDTH provided, defaults to 1280")
+        CAMERA_WIDTH = 1280
+
+    if CAMERA_HEIGHT is None:
+        logger.info("CAMERA_HEIGHT not provided, defaults to 720")
+        CAMERA_HEIGHT = 720
+    elif CAMERA_HEIGHT.isDigit():
+        logger.info(f"CAMERA_HEIGHT is {CAMERA_HEIGHT}")
+    else:
+        logger.warning("Invalid CAMERA_HEIGHT provided, defaults to 720")
+        CAMERA_HEIGHT = 720
+    
+    if CAMERA_FPS is None:
+        logger.info("CAMERA_FPS not provided, defaults to 30")
+        CAMERA_FPS = 30
+    elif CAMERA_FPS.isDigit():
+        logger.info(f"CAMERA_FPS is {CAMERA_FPS}")
+    else:
+        logger.warning("Invalid CAMERA_FPS provided, defaults to 30")
+        CAMERA_FPS = 30
 
 if __name__ == "__main__":
     logger.critical("Module robot_settings ran as program, exiting")

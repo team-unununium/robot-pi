@@ -12,15 +12,12 @@ The project consists of 4 main modules: The client, server, Raspberry Pi and Ard
  - [Arduino Module](https://github.com/team-unununium/HnR-2020-VR-Arduino)
 
 # Current module - Raspberry Pi
-The Raspberry Pi module is in charge of facilitating communication between the Arduino and the server. It uses [picamera](https://picamera.readthedocs.io/) and [python-socketio](https://python-socketio.readthedocs.io/). The full list of requirements can be found in requirements.txt. It also provides the live video feed to the clients through a public livestream on Twitch. The identity of the raspberry pi is confirmed by the server through a common secret, which is the `SERVER_ROBOT_SECRET`. The communication protocol between the Raspberry Pi and the Arduino can be found in [diagram.uml](https://github.com/team-unununium/HnR-2020-VR-Pi/blob/master/diagram.uml) and [arduino_protocol.png](https://github.com/team-unununium/HnR-2020-VR-Pi/blob/master/arduino_protocol.png).
-
-The following image is the protocol for communicating between the Raspberry Pi and the Arduino:
-![Protocol UML](https://plantuml.pcchin.com/png/jP91ImCn48Nl-HNFWxKhjJ-Wi691H3neQVKcGknEky5i9cpIIX7zxKwsMwpRNZnuMZPvxyqta_6wZcPkl7OHuxfO6SVAxvrDZ5AE8u7NLEyK0paUOMmjvbnLsXK1kYO44eCE2COjhVnkgbUs0Gkk4JnHWHv81ubQm5JUKYLw7GqxfV8SivZAkYNoN4qCBYvtrKOuGV-MhELi3oKHF9OaNxmR8NaZyWXwanBA94RaPnT5qSPWvQAnC14r1Sy2hNOtKYl5_PHfUCW58R_MKHz1ka9V10KgWfRggKve3E4CXLYoRhWOcYYPc20EK6e1ZMPPnWFf1svMadatUxXlil3PLVJQi8Ln9fHK_29-ycAYnDnndQBVtgKdAVwPPigl75kOS6I2N-SomlJcg7Wj49aQ3eSpakLBXErYoT61BzdO_z7rWlwKjzksxSAuRUzPLtcatuxYeDzl "Protocol for Pi-Arduino communication")
+The Raspberry Pi module is in charge of facilitating communication between the Arduino and the server. It uses [picamera](https://picamera.readthedocs.io/) and [python-socketio](https://python-socketio.readthedocs.io/). The full list of requirements can be found in requirements.txt. It also provides the live video feed to the clients through a public livestream on Twitch. The identity of the raspberry pi is confirmed by the server through a common secret, which is the `SERVER_ROBOT_SECRET`. The communication protocol between the Raspberry Pi and the Arduino can be found in [pi-arduino-protocol.plantuml](https://github.com/team-unununium/HnR-2020-VR-Pi/blob/master/protocol/pi-arduino-protocol.plantuml) and [pi-arduino-protocol.png](https://github.com/team-unununium/HnR-2020-VR-Pi/blob/master/protocol/pi-arduino-protocol.png).
 
 ## Progress
 - [x] Main Program
 - [x] Socket.IO Module
-- [x] Arduino Module (Untested)
+- [x] Arduino Module
 - [x] Settings Module
 
 ## How to install
