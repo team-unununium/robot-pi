@@ -1,5 +1,5 @@
 from io import BytesIO
-from threading import Thread
+from threading import Thread, Condition
 from picamera import PiCamera
 import logging
 import time
@@ -8,11 +8,30 @@ import src.robot_settings as settings
 
 logger = logging.getLogger("Video Stream")
 
+# https://randomnerdtutorials.com/video-streaming-with-raspberry-pi-camera/
+class StreamingOutput(object):
+    def __init__(self):
+        self.frame = None
+        self.buffer = BytesIO()
+        self.condition = Condition()
+    
+    def write(self, buf):
+        if buf.startswith(b'\xff\xd8'):
+            # New frame, copy the existing buffer's content and notify all
+            # clients it's available
+            self.buffer.truncate()
+            with self.condition:
+                self.frame = self.buffer.getvalue()
+                self.condition.notify_all()
+            self.buffer.seek(0)
+        return self.buffer.write(buf)
+
 class VideoProgram:
     def __init__(self):
         logger.info("Video program initiated")
         self.working = True # Whether the module is up and running
         self.dataThread = Thread(target=self.videoThread)
+        self.output = StreamingOutput()
         self.camera = PiCamera()
 
     def start(self):
@@ -30,24 +49,18 @@ class VideoProgram:
         self.camera.stop_preview()
         self.camera.resolution = (settings.CAMERA_WIDTH, settings.CAMERA_HEIGHT)
         self.camera.framerate = settings.CAMERA_FPS
-        stream = BytesIO()
-        while self.working:
-            self.camera.start_recording(stream, format='h264', quality=21)
-            self.camera.wait_recording(settings.BUFFER_DURATION)
-            self.camera.stop_recording()
-            stream.seek(0)
-            bufferBytes = stream.read()
-            stream.seek(0)
-            stream.truncate()
-            Thread(target=self.sendFootage, args=(bufferBytes,)).start()
-
-    def sendFootage(self, bufferBytes):
-        if settings.socketProgram is not None:
-            settings.socketProgram.sendVideoFootage(bufferBytes)
+        self.camera.start_recording(self.output, format='mjpeg')
+        while True:
+            self.frame = None
+            with self.output.condition:
+                self.output.condition.wait()
+                self.frame = self.output.frame
+            settings.socketProgram.sendVideoFootage(self.frame)
 
     def stop(self):
         if self.working:
             self.working = False
+            self.camera.stop_recording()
             logger.info("Video program stopped")
         else:
             logger.warning(f"Video program is not working (already stopped)")
