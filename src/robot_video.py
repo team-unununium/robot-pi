@@ -32,7 +32,12 @@ class VideoProgram:
         self.working = True # Whether the module is up and running
         self.dataThread = Thread(target=self.videoThread)
         self.output = StreamingOutput()
-        self.camera = PiCamera()
+        try:
+            self.camera = PiCamera()
+        except Exception as e:
+            logger.warning("Unable to retrieve PiCamera, maybe camera is not connected?")
+            print("An error occured while attempting to start the video program. Please check the logs for more information.")
+            self.working = False
 
     def start(self):
         if self.working:

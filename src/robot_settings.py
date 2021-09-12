@@ -25,11 +25,11 @@ def init():
     global CAMERA_WIDTH
     global CAMERA_HEIGHT
     global CAMERA_FPS
+    global MOCK_ARDUINO_ENABLED
 
     # Dynamic variables
     global sio
     global programStarted
-    global programRunning
     global disconnectCount
 
     # Initialize static variables
@@ -41,6 +41,7 @@ def init():
     CAMERA_WIDTH = environ.get("CAMERA_WIDTH")
     CAMERA_HEIGHT = environ.get("CAMERA_HEIGHT")
     CAMERA_FPS = environ.get("CAMERA_FPS")
+    MOCK_ARDUINO_ENABLED = environ.get("MOCK_ARDUINO_ENABLED")
 
     # Initialize dynamic variables
     arduinoProgram = None
@@ -49,7 +50,6 @@ def init():
 
     sio = socketio.Client(reconnection_attempts=10)
     programStarted = True
-    programRunning = False
     disconnectCount = 0
 
     # Variable checking
@@ -103,6 +103,11 @@ def init():
     else:
         logger.warning("Invalid CAMERA_FPS provided, defaults to 30")
         CAMERA_FPS = 30
+
+    if MOCK_ARDUINO_ENABLED is None:
+        logger.info("Arduino mocking disabled")
+    else:
+        logger.info("Arduino mocking enabled")
 
 if __name__ == "__main__":
     logger.critical("Module robot_settings ran as program, exiting")

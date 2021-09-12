@@ -63,7 +63,6 @@ def connect():
     if settings.videoProgram is None:
         settings.videoProgram = VideoProgram()
         settings.videoProgram.start()
-    settings.programRunning = True
 
 @settings.sio.event
 def testRobot():
@@ -94,43 +93,30 @@ def unauthorized(data):
 
 @settings.sio.event
 def robotRotateCamera(data):
-    if settings.programRunning:
-        logger.info("Received request to rotate robot camera")
-        settings.arduinoProgram.rotateCamera(data)
-    else:
-        logger.warning("Received request to rotate robot camera but Arduino program is not running")
+    # Too noisy
+    #logger.info("Received request to rotate robot camera")
+    settings.arduinoProgram.rotateCamera(data)
 
 @settings.sio.event
 def robotRotate(data):
-    if settings.programRunning:
-        logger.info("Received request to rotate robot")
-        settings.arduinoProgram.rotate(data)
-    else:
-        logger.warning("Received request to rotate robot but Arduino program is not running")
+    # Too noisy
+    #logger.info("Received request to rotate robot")
+    settings.arduinoProgram.rotate(data)
 
 @settings.sio.event
 def robotStartMoving():
-    if settings.programRunning:
-        logger.info("Received request to start moving robot")
-        settings.arduinoProgram.startMoving()
-    else:
-        logger.warning("Received request to start moving robot but Arduino program is not running")
+    logger.info("Received request to start moving robot")
+    settings.arduinoProgram.startMoving()
 
 @settings.sio.event
 def robotStopMoving():
-    if settings.programRunning:
-        logger.info("Received request to stop moving robot")
-        settings.arduinoProgram.stopMoving()
-    else:
-        logger.warning("Received request to stop moving robot but Arduino program is not running")
+    logger.info("Received request to stop moving robot")
+    settings.arduinoProgram.stopMoving()
 
 @settings.sio.event
 def robotChangeSpeed(data):
-    if settings.programRunning:
-        logger.info("Received request to change the velocity of the robot")
-        settings.arduinoProgram.changeSpeed(data)
-    else:
-        logger.warning("Received request to change the velocity of the robot but Arduino program is not running")
+    logger.info("Received request to change the velocity of the robot")
+    settings.arduinoProgram.changeSpeed(data)
 
 @settings.sio.event
 def disconnect():
